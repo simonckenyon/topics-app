@@ -14,7 +14,6 @@ import org.jetbrains.anko.custom.ankoView
 
 private const val ACTIVITY_PADDING = 16
 
-
 class AddTopicDialog(ui: AnkoContext<View>) {
 
     lateinit var dialog: DialogInterface
