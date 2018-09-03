@@ -7,11 +7,9 @@ import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
-import kotlinx.android.synthetic.main.activity_sign_in.*
-import kotlinx.android.synthetic.main.content_sign_in.*
-import org.slf4j.LoggerFactory
-
 import ie.koala.topics.R
+import kotlinx.android.synthetic.main.activity_sign_in.*
+import org.slf4j.LoggerFactory
 
 class SignInActivity : AppCompatActivity() {
 
@@ -57,7 +55,7 @@ class SignInActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        // Disable going back to the MainActivity
+        // Disable going back to the WelcomeActivity
         moveTaskToBack(true)
     }
 

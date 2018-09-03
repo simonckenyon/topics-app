@@ -7,11 +7,9 @@ import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
-import kotlinx.android.synthetic.main.activity_sign_up.*
-import kotlinx.android.synthetic.main.content_sign_up.*
-import org.slf4j.LoggerFactory
-
 import ie.koala.topics.R
+import kotlinx.android.synthetic.main.activity_sign_up.*
+import org.slf4j.LoggerFactory
 
 class SignUpActivity : AppCompatActivity() {
 

@@ -17,6 +17,9 @@ data class Topic(var id: String? = null, var title: String? = null, var content:
     }
 
     companion object Factory {
+
+        const val ARG_TOPIC: String = "ARG_TOPIC"
+
         fun create(): Topic = Topic()
     }
 }

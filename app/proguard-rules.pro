@@ -20,10 +20,14 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
-# general logging
 -keep class ch.qos.** { *; }
+
 -keep class org.slf4j.** { *; }
+
 -keepattributes *Annotation*
+
+-keep @**annotation** class * {*;}
+
 -dontwarn ch.qos.logback.core.net.*
 
 -dontwarn org.slf4j.**

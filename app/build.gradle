@@ -3,16 +3,40 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 android {
-    compileSdkVersion 27
+    compileSdkVersion 28
     defaultConfig {
         applicationId "ie.koala.topics"
-        minSdkVersion 25
-        targetSdkVersion 27
-        versionCode 1
-        versionName "1.0"
+        minSdkVersion 26
+        targetSdkVersion 28
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         resConfigs "en"
+
+        def versionMajor = 1
+        def versionMinor = 0
+        def versionPatch = 0
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        def versionPropsFile = file('version.properties')
+        def code
+
+        if (versionPropsFile.canRead()) {
+            Properties versionProps = new Properties()
+            versionProps.load(new FileInputStream(versionPropsFile))
+            code = versionProps['VERSION_CODE'].toInteger() + 1
+            versionProps['VERSION_CODE'] = code.toString()
+            versionProps.store(versionPropsFile.newWriter(), null)
+        } else {
+            throw new GradleException("Could not read version.properties!")
+        }
+
+        buildConfigField 'String', 'BUILD_TIME', "\"${buildTime()}\""
+        buildConfigField 'String', 'GIT_HASH', "\"${gitSha()}\""
+
+        versionName "${versionMajor}.${versionMinor}.${versionPatch}"
+        versionCode code
+
     }
     buildTypes {
         release {
@@ -53,6 +77,9 @@ dependencies {
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation "com.hendraanggrian.pikasso:pikasso:$pikasso_version"
 
+    implementation 'info.bliki.wiki:bliki-core:3.0.19'
+    implementation 'com.google.guava:guava:23.0'
+
     testImplementation 'junit:junit:4.12'
 
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
@@ -60,3 +87,11 @@ dependencies {
 }
 
 apply plugin: 'com.google.gms.google-services'
+
+def gitSha() {
+    return 'git rev-parse --short HEAD'.execute().text.trim()
+}
+
+def buildTime() {
+    return new Date().format("yyyy-MM-dd'T'HH:mm:ssZ", TimeZone.getTimeZone("UTC"))
+}

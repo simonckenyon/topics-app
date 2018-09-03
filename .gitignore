@@ -40,6 +40,8 @@ proguard/
 .idea/**/dictionaries
 .idea/**/shelf
 
+.idea/**/build_file_checksums.ser
+
 # Generated files
 .idea/**/contentModel.xml
 

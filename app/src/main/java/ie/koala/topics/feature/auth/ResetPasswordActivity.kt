@@ -1,16 +1,14 @@
 package ie.koala.topics.feature.auth
 
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import com.google.firebase.auth.FirebaseAuth
+import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
 import android.view.View
+import com.google.firebase.auth.FirebaseAuth
+import ie.koala.topics.R
 import kotlinx.android.synthetic.main.activity_reset_password.*
-import kotlinx.android.synthetic.main.content_reset_password.*
 import org.jetbrains.anko.design.longSnackbar
 import org.jetbrains.anko.design.snackbar
-
-import ie.koala.topics.R
 
 class ResetPasswordActivity : AppCompatActivity() {
 

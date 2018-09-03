@@ -1,18 +1,23 @@
 package ie.koala.topics.feature.topic
 
 import android.os.Bundle
+import android.support.v4.app.NavUtils
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
+import android.view.MenuItem
 import com.google.firebase.database.*
 import ie.koala.topics.R
 import kotlinx.android.synthetic.main.activity_topic_list.*
-import kotlinx.android.synthetic.main.topic_list.*
-import org.jetbrains.anko.*
+import org.jetbrains.anko.AnkoContext
+import org.jetbrains.anko.contentView
+import org.jetbrains.anko.ctx
 import org.jetbrains.anko.design.snackbar
+import org.jetbrains.anko.toast
 import org.slf4j.LoggerFactory
+
 
 /**
  * An activity representing a list of Topics. This activity
@@ -24,21 +29,11 @@ import org.slf4j.LoggerFactory
  */
 class TopicListActivity : AppCompatActivity() {
 
-    /**
-     * Whether or not the activity is in two-pane mode, i.e. running on a tablet
-     * device.
-     */
-    private var twoPane: Boolean = false
-
     var topicList: MutableList<Topic>? = null
     lateinit var adapter: TopicListAdapter
-
     lateinit var database: FirebaseDatabase
     lateinit var topicsDatabaseReference: DatabaseReference
-
     lateinit var topicListener: ChildEventListener
-
-    private val log = LoggerFactory.getLogger(TopicListActivity::class.java)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,6 +41,9 @@ class TopicListActivity : AppCompatActivity() {
 
         setSupportActionBar(toolbar)
         toolbar.title = "Topics"
+
+        // Show the Up button in the action bar.
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         topicList = mutableListOf<Topic>()
 
@@ -56,14 +54,6 @@ class TopicListActivity : AppCompatActivity() {
 
         fab.setOnClickListener {
             addNewTopicDialog(topicsDatabaseReference)
-        }
-
-        if (topic_detail_container != null) {
-            // The detail container view will be present only in the
-            // large-screen layouts (res/values-w900dp).
-            // If this view is present, then the
-            // activity should be in two-pane mode.
-            twoPane = true
         }
 
         setupRecyclerView(topic_list)
@@ -84,51 +74,41 @@ class TopicListActivity : AppCompatActivity() {
         val childEventListener: ChildEventListener = object : ChildEventListener {
 
             override fun onChildAdded(dataSnapshot: DataSnapshot, previousChildName: String?) {
-                // A new topic has been added
-                // onChildAdded() will be called for each node at the first time
                 val topic = dataSnapshot.getValue(Topic::class.java)
                 topicList!!.add(topic!!)
-
                 adapter.notifyDataSetChanged()
-
-                snackbar(coordinator_layout_topic_list,"Topic \"${topic.title}\" added")
+                //snackbar(coordinator_layout_topic_list,"Topic \"${topic.title}\" added")
             }
 
             override fun onChildChanged(dataSnapshot: DataSnapshot, previousChildName: String?) {
                 log.debug("onChildChanged:" + dataSnapshot.key)
-
-                // A topic has changed
                 val topic = dataSnapshot.getValue(Topic::class.java)
                 topicList!!.remove(topic!!)
                 topicList!!.add(topic)
                 adapter.notifyDataSetChanged()
-                snackbar(coordinator_layout_topic_list,"Topic \"${topic.title}\" changed")
+                //snackbar(coordinator_layout_topic_list,"Topic \"${topic.title}\" changed")
             }
 
             override fun onChildRemoved(dataSnapshot: DataSnapshot) {
                 log.debug("onChildRemoved:" + dataSnapshot.key)
-
-                // A topic has been removed
                 val topic = dataSnapshot.getValue(Topic::class.java)
                 topicList!!.remove(topic!!)
                 adapter.notifyDataSetChanged()
-                snackbar(coordinator_layout_topic_list,"Topic \"${topic.title}\" removed")
+                //snackbar(coordinator_layout_topic_list,"Topic \"${topic.title}\" removed")
             }
 
             override fun onChildMoved(dataSnapshot: DataSnapshot, previousChildName: String?) {
                 log.debug("onChildMoved:" + dataSnapshot.key)
-
-                // A topic has changed position
                 val topic = dataSnapshot.getValue(Topic::class.java)
                 topicList!!.remove(topic!!)
                 topicList!!.add(topic)
                 adapter.notifyDataSetChanged()
-                snackbar(coordinator_layout_topic_list, "Topic \"${topic.title}\" moved")
+                //snackbar(coordinator_layout_topic_list, "Topic \"${topic.title}\" moved")
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
                 log.error("postTopics:onCancelled ", databaseError.toException())
-                snackbar(coordinator_layout_topic_list,"Failed to load topic")
+                snackbar(coordinator_layout_topic_list, "Failed to load topic")
             }
         }
 
@@ -136,6 +116,22 @@ class TopicListActivity : AppCompatActivity() {
 
         // copy for removing at onStop()
         topicListener = childEventListener
+    }
+
+    override fun onBackPressed() {
+        log.debug("onBackPressed:")
+        super.onBackPressed()
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        log.debug("onOptionsItemSelected:")
+        when (item.getItemId()) {
+            android.R.id.home -> {
+                NavUtils.navigateUpFromSameTask(this)
+                return true
+            }
+            else -> return super.onOptionsItemSelected(item)
+        }
     }
 
     private fun addNewTopicDialog(databaseReference: DatabaseReference) {
@@ -165,7 +161,7 @@ class TopicListActivity : AppCompatActivity() {
     }
 
     private fun setupRecyclerView(recyclerView: RecyclerView) {
-        adapter = TopicListAdapter(this, topicList!!, twoPane)
+        adapter = TopicListAdapter(this, topicList!!)
         recyclerView.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adapter
@@ -182,5 +178,10 @@ class TopicListActivity : AppCompatActivity() {
 
         val itemTouchHelper = ItemTouchHelper(swipeHandler)
         itemTouchHelper.attachToRecyclerView(recyclerView)
+    }
+
+    companion object {
+        //const val KEY_TWO_PANE: String = "KEY_TWO_PANE"
+        private val log = LoggerFactory.getLogger(TopicListActivity::class.java)
     }
 }

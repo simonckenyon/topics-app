@@ -2,31 +2,26 @@ package ie.koala.topics.feature.welcome
 
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
-import android.widget.ImageView
-import android.widget.TextView
 import com.google.firebase.auth.FirebaseAuth
 import com.hendraanggrian.pikasso.picasso
 import com.hendraanggrian.pikasso.transformations.circle
 import fr.tkeunebr.gravatar.Gravatar
 import ie.koala.topics.R
-import ie.koala.topics.feature.topic.TopicListActivity
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.app_bar_main.*
-import kotlinx.android.synthetic.main.nav_header_main.view.*
-import org.jetbrains.anko.design.longSnackbar
-import org.slf4j.LoggerFactory
-
+import ie.koala.topics.app.TopicsApplication
+import ie.koala.topics.app.TopicsApplication.Companion.getMyApplication
 import ie.koala.topics.feature.auth.SignInActivity
 import ie.koala.topics.feature.auth.SignUpActivity
+import ie.koala.topics.feature.topic.TopicListActivity
+import kotlinx.android.synthetic.main.activity_welcome.*
+import kotlinx.android.synthetic.main.nav_header_main.view.*
+import org.slf4j.LoggerFactory
 
-class MainActivity : AppCompatActivity() {
+class WelcomeActivity : AppCompatActivity() {
 
     enum class MenuState { APP, ACCOUNT_SWITCHER }
 
@@ -34,26 +29,27 @@ class MainActivity : AppCompatActivity() {
 
     private var auth: FirebaseAuth? = null
 
-    private val log = LoggerFactory.getLogger(MainActivity::class.java)
+    private val log = LoggerFactory.getLogger(WelcomeActivity::class.java)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_welcome)
         setSupportActionBar(toolbar)
 
         auth = FirebaseAuth.getInstance()
 
-        val navigationView = findViewById<View>(R.id.nav_view) as NavigationView
-        val headerView = navigationView.getHeaderView(0)
+        val headerView = nav_view.getHeaderView(0)
         headerView.setOnClickListener {
             toggleNavigationMenu()
             updateNavigationMenu()
         }
 
-        fab.setOnClickListener { view ->
-            longSnackbar(view, "Replace with your own action", "Action") {}
-        }
+        val application: TopicsApplication = getMyApplication()
+        version_name.text = application.versionName
+        version_code.text = application.versionCode
+        version_build_timestamp.text = application.versionBuildTimestamp
+        version_git_hash.text = application.versionGitHash
 
         val toggle = ActionBarDrawerToggle(
                 this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
@@ -85,9 +81,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+        log.debug("onOptionsItemSelected:")
         when (item.itemId) {
             R.id.action_settings -> return true
             else -> return super.onOptionsItemSelected(item)
@@ -107,9 +101,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateNavigationMenu() {
-        val navigationView = findViewById<View>(R.id.nav_view) as NavigationView
-        val menu = navigationView.menu
-        val headerView = navigationView.getHeaderView(0)
+        val menu = nav_view.menu
+        val headerView = nav_view.getHeaderView(0)
         val emailAddress = headerView.email_address
 
         menu.clear()
@@ -117,13 +110,13 @@ class MainActivity : AppCompatActivity() {
         if (auth != null && auth?.currentUser != null) {
             // signed in
             val user = auth!!.currentUser
-            val gravatarUrl = Gravatar.init().with(user!!.email).force404().size(Gravatar.MAX_IMAGE_SIZE_PIXEL).build()
+            log.debug("email=${user?.email}")
+            val gravatarUrl = Gravatar.init().with(user?.email).defaultImage(4).size(Gravatar.MAX_IMAGE_SIZE_PIXEL).build()
             log.debug("gravatarUrl=$gravatarUrl")
 
-            val avatarImage = headerView.findViewById(R.id.avatar) as ImageView
-            picasso.load(gravatarUrl).circle().into(avatarImage)
+            picasso.load(gravatarUrl).circle().into(headerView.avatar)
 
-            emailAddress.text = user.email
+            emailAddress.text = user?.email
 
             if (navigationDrawerMenuState == MenuState.ACCOUNT_SWITCHER) {
                 emailAddress.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_arrow_drop_up, 0)
