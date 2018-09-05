@@ -18,7 +18,7 @@ class TopicEditActivity : AppCompatActivity() {
     lateinit var database: FirebaseDatabase
     lateinit var topicsDatabaseReference: DatabaseReference
 
-    private var topic: Topic? = null
+    lateinit var topic: Topic
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,11 +34,9 @@ class TopicEditActivity : AppCompatActivity() {
         topicsDatabaseReference = database.getReference("topics")
 
         topic = intent.getParcelableExtra<Topic>(ARG_TOPIC)
-        topic?.let { topic ->
-            log.debug("onCreate: topic=${topic}")
-            input_title.setText(topic.title)
-            input_content.setText(topic.content)
-        }
+        log.debug("onCreate: topic=${topic}")
+        input_title.setText(topic.title)
+        input_content.setText(topic.content)
         btn_save.setOnClickListener {
             topicUpdated()
             returnToDetailActivity()
@@ -46,15 +44,10 @@ class TopicEditActivity : AppCompatActivity() {
     }
 
     fun topicUpdated() {
-        topic?.let { topic ->
-            topic.title = input_title.text.toString()
-            topic.content = input_content.text.toString()
-            val id: String? = topic.id
-            if (id != null) {
-                topicsDatabaseReference.child(id).child("title").setValue(topic.title)
-                topicsDatabaseReference.child(id).child("content").setValue(topic.content)
-            }
-        }
+        topic.title = input_title.text.toString()
+        topic.content = input_content.text.toString()
+        topicsDatabaseReference.child(topic.id).child("title").setValue(topic.title)
+        topicsDatabaseReference.child(topic.id).child("content").setValue(topic.content)
     }
 
     fun returnToDetailActivity() {

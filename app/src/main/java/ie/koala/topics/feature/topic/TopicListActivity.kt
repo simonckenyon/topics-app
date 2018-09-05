@@ -1,5 +1,6 @@
 package ie.koala.topics.feature.topic
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.NavUtils
 import android.support.v7.app.AppCompatActivity
@@ -10,26 +11,25 @@ import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.MenuItem
 import com.google.firebase.database.*
 import ie.koala.topics.R
+import ie.koala.topics.app.adapter.OnRecyclerItemClickListener
+import ie.koala.topics.app.adapter.ItemTouchHelperCallback
 import kotlinx.android.synthetic.main.activity_topic_list.*
 import org.jetbrains.anko.AnkoContext
 import org.jetbrains.anko.contentView
 import org.jetbrains.anko.ctx
 import org.jetbrains.anko.design.snackbar
-import org.jetbrains.anko.toast
 import org.slf4j.LoggerFactory
+import java.util.*
 
 
 /**
- * An activity representing a list of Topics. This activity
- * has different presentations for handset and tablet-size devices. On
- * handsets, the activity presents a list of items, which when touched,
- * lead to a [TopicDetailActivity] representing
- * item details. On tablets, the activity presents the list of items and
- * item details side-by-side using two vertical panes.
+ * An activity representing a list of Topics.
  */
-class TopicListActivity : AppCompatActivity() {
+class TopicListActivity : AppCompatActivity(), OnRecyclerItemClickListener, TopicListener {
 
-    var topicList: MutableList<Topic>? = null
+    lateinit var itemTouchHelper: ItemTouchHelper
+
+    var topicList: MutableList<Topic> = mutableListOf<Topic>()
     lateinit var adapter: TopicListAdapter
     lateinit var database: FirebaseDatabase
     lateinit var topicsDatabaseReference: DatabaseReference
@@ -45,7 +45,7 @@ class TopicListActivity : AppCompatActivity() {
         // Show the Up button in the action bar.
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        topicList = mutableListOf<Topic>()
+        log.debug("onCreate:")
 
         database = FirebaseDatabase.getInstance()
         topicsDatabaseReference = database.getReference("topics")
@@ -64,45 +64,58 @@ class TopicListActivity : AppCompatActivity() {
 
         topicsDatabaseReference.removeEventListener(topicListener)
 
-        topicList?.forEach { topic ->
+        topicList.forEach { topic ->
             log.debug("onStop: topic=${topic.title}")
         }
     }
 
     private fun firebaseListenerInit() {
-
+        log.debug("firebaseListenerInit:")
         val childEventListener: ChildEventListener = object : ChildEventListener {
 
             override fun onChildAdded(dataSnapshot: DataSnapshot, previousChildName: String?) {
                 val topic = dataSnapshot.getValue(Topic::class.java)
-                topicList!!.add(topic!!)
-                adapter.notifyDataSetChanged()
+                log.debug("onChildAdded: topic added topic=${topic!!.title}")
+                topicList.add(topic!!)
+                topicList.sortWith(object : Comparator<Topic> {
+                    override fun compare(t1: Topic, t2: Topic): Int = t1.compareToByIndex(t2)
+                })
+                adapter.setItems(topicList)
                 //snackbar(coordinator_layout_topic_list,"Topic \"${topic.title}\" added")
             }
 
             override fun onChildChanged(dataSnapshot: DataSnapshot, previousChildName: String?) {
                 log.debug("onChildChanged:" + dataSnapshot.key)
                 val topic = dataSnapshot.getValue(Topic::class.java)
-                topicList!!.remove(topic!!)
-                topicList!!.add(topic)
-                adapter.notifyDataSetChanged()
+                topicList.remove(topic!!)
+                topicList.add(topic)
+                topicList.sortWith(object : Comparator<Topic> {
+                    override fun compare(t1: Topic, t2: Topic): Int = t1.compareToByIndex(t2)
+                })
+                adapter.setItems(topicList)
                 //snackbar(coordinator_layout_topic_list,"Topic \"${topic.title}\" changed")
             }
 
             override fun onChildRemoved(dataSnapshot: DataSnapshot) {
                 log.debug("onChildRemoved:" + dataSnapshot.key)
                 val topic = dataSnapshot.getValue(Topic::class.java)
-                topicList!!.remove(topic!!)
-                adapter.notifyDataSetChanged()
+                topicList.remove(topic!!)
+                topicList.sortWith(object : Comparator<Topic> {
+                    override fun compare(t1: Topic, t2: Topic): Int = t1.compareToByIndex(t2)
+                })
+                adapter.setItems(topicList)
                 //snackbar(coordinator_layout_topic_list,"Topic \"${topic.title}\" removed")
             }
 
             override fun onChildMoved(dataSnapshot: DataSnapshot, previousChildName: String?) {
                 log.debug("onChildMoved:" + dataSnapshot.key)
                 val topic = dataSnapshot.getValue(Topic::class.java)
-                topicList!!.remove(topic!!)
-                topicList!!.add(topic)
-                adapter.notifyDataSetChanged()
+                topicList.remove(topic!!)
+                topicList.sortWith(object : Comparator<Topic> {
+                    override fun compare(t1: Topic, t2: Topic): Int = t1.compareToByIndex(t2)
+                })
+                topicList.add(topic)
+                adapter.setItems(topicList)
                 //snackbar(coordinator_layout_topic_list, "Topic \"${topic.title}\" moved")
             }
 
@@ -142,17 +155,19 @@ class TopicListActivity : AppCompatActivity() {
         }
 
         addNewTopicDialogUi?.okButton?.setOnClickListener {
-            val topic = Topic.create()
-            topic.title = addNewTopicDialogUi.topicTitleText.text.toString()
-            topic.content = addNewTopicDialogUi.topicContentText.text.toString()
-
             //We first make a push so that a new item is made with a unique ID
             val newTopic = databaseReference.push()
-            topic.id = newTopic.key
-            //then, we used the reference to set the value on that ID
-            newTopic.setValue(topic)
-            addNewTopicDialogUi.dialog.dismiss()
-            toast("Topic saved with ID " + topic.id)
+            val id = newTopic.key
+            id?.let { nonNullId ->
+                val index = topicList.size
+                val title = addNewTopicDialogUi.topicTitleText.text.toString()
+                val content = addNewTopicDialogUi.topicContentText.text.toString()
+                val topic = Topic(nonNullId, index, title, content)
+
+                newTopic.setValue(topic)
+                addNewTopicDialogUi.dialog.dismiss()
+                snackbar(coordinator_layout_topic_list, "Topic \"${topic.title}\" added")
+            }
         }
 
         addNewTopicDialogUi?.cancelButton?.setOnClickListener {
@@ -161,27 +176,90 @@ class TopicListActivity : AppCompatActivity() {
     }
 
     private fun setupRecyclerView(recyclerView: RecyclerView) {
-        adapter = TopicListAdapter(this, topicList!!)
-        recyclerView.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
-        recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.adapter = adapter
-
-        val swipeHandler = object : SwipeToDeleteCallback(this) {
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                val topic: Topic = adapter.removeAt(viewHolder.adapterPosition)
-                val id: String? = topic.id
-                if (id != null) {
-                    topicsDatabaseReference.child(id).removeValue()
-                }
-            }
+        log.debug("setupRecyclerView: topicList.size=${topicList.size}")
+        topicList.forEach { topic ->
+            log.debug("setupRecyclerView: topic=${topic.title}")
         }
 
-        val itemTouchHelper = ItemTouchHelper(swipeHandler)
+        adapter = TopicListAdapter(this, this)
+        adapter.topicListener = this
+        recyclerView.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
+        recyclerView.setHasFixedSize(true)
+        recyclerView.setAdapter(adapter)
+        recyclerView.layoutManager = LinearLayoutManager(this)
+
+        adapter.setItems(topicList)
+        recyclerView.adapter = adapter
+
+        // this was the original
+//        val swipeHandler = object : SwipeToDeleteCallback(this) {
+//            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+//                val topic: Topic = adapter.removeAt(viewHolder.adapterPosition)
+//                topicsDatabaseReference.child(topic.id).removeValue()
+//            }
+//        }
+//
+//        val itemTouchHelper = ItemTouchHelper(swipeHandler)
+//        itemTouchHelper.attachToRecyclerView(recyclerView)
+
+        // and this is the latest
+        val callback = ItemTouchHelperCallback(adapter)
+        itemTouchHelper = ItemTouchHelper(callback)
         itemTouchHelper.attachToRecyclerView(recyclerView)
     }
 
+    /**
+     * Called when a view is requesting a start of a drag.
+     *
+     * @param viewHolder The holder of the view to drag.
+     */
+    override fun onStartDrag(viewHolder: RecyclerView.ViewHolder) {
+        itemTouchHelper.startDrag(viewHolder)
+    }
+
+    /**
+     * Returns clicked item position [RecyclerView.ViewHolder.getAdapterPosition]
+     *
+     * @param position clicked item position.
+     */
+    override fun onItemClick(position: Int) {
+        val clickedTopic: Topic = adapter.getItem(position);
+        log.debug("onItemClick: topic=${clickedTopic.title}")
+        val intent = Intent(this, TopicDetailActivity::class.java).apply {
+            putExtra(Topic.ARG_TOPIC, clickedTopic)
+        }
+        startActivity(intent)
+
+    }
+
+    override fun onItemDeleted(topic: Topic) {
+        log.debug("onItemDeleted: topic=${topic.title}")
+        topicsDatabaseReference.child(topic.id).removeValue()
+    }
+
+    override fun onItemMoved(fromPosition: Int, toPosition: Int) {
+        log.debug("onItemMove: fromPosition=$fromPosition toPosition=$toPosition")
+        if (fromPosition < toPosition) {
+            for (i in fromPosition until toPosition) {
+                val fromChildId: String = topicList[i].id
+                val toChildId: String = topicList[i + 1].id
+                topicsDatabaseReference.child(fromChildId).child("index").setValue(i + 1)
+                topicsDatabaseReference.child(toChildId).child("index").setValue(i)
+            }
+        } else {
+            for (i in fromPosition downTo toPosition + 1) {
+                val fromChildId: String = topicList[i].id
+                val toChildId: String = topicList[i - 1].id
+                topicsDatabaseReference.child(fromChildId).child("index").setValue(i - 1)
+                topicsDatabaseReference.child(toChildId).child("index").setValue(i)
+            }
+        }
+
+
+
+    }
+
     companion object {
-        //const val KEY_TWO_PANE: String = "KEY_TWO_PANE"
         private val log = LoggerFactory.getLogger(TopicListActivity::class.java)
     }
 }

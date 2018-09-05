@@ -1,62 +1,61 @@
 package ie.koala.topics.feature.topic
 
-import android.content.Intent
-import android.support.v7.widget.RecyclerView
-import android.view.LayoutInflater
-import android.view.View
+import android.content.Context
 import android.view.ViewGroup
+
 import ie.koala.topics.R
-import ie.koala.topics.feature.topic.Topic.Factory.ARG_TOPIC
-import kotlinx.android.synthetic.main.row_item.view.*
+import ie.koala.topics.app.adapter.GenericRecyclerViewAdapter
+import ie.koala.topics.app.adapter.OnRecyclerItemClickListener
+import org.slf4j.LoggerFactory
 
-class TopicListAdapter(private val parentActivity: TopicListActivity,
-                       private val topicList: MutableList<Topic>) : RecyclerView.Adapter<TopicListAdapter.ViewHolder>() {
+class TopicListAdapter(context: Context, listener: OnRecyclerItemClickListener) : GenericRecyclerViewAdapter<Topic, OnRecyclerItemClickListener, TopicViewHolder>(context, listener) {
 
-    private val onClickListener: View.OnClickListener
+    lateinit var topicListener: TopicListener
 
-    init {
-        onClickListener = View.OnClickListener { v ->
-            val topic = v.tag as Topic
-            val intent = Intent(v.context, TopicDetailActivity::class.java).apply {
-                putExtra(ARG_TOPIC, topic)
-            }
-            v.context.startActivity(intent)
-        }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TopicViewHolder {
+        return TopicViewHolder(inflate(R.layout.item_topic, parent), listener!!)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(parent)
+    /**
+     * Called when an item has been dragged far enough to trigger a move. This is called every time
+     * an item is shifted, and **not** at the end of a "drop" event.<br></br>
+     * <br></br>
+     * Implementations should call [RecyclerView.Adapter.notifyItemMoved] after
+     * adjusting the underlying data to reflect this move.
+     *
+     * @param fromPosition The start position of the moved item.
+     * @param toPosition   Then resolved position of the moved item.
+     * @return True if the item was moved to the new adapter position.
+     *
+     * @see RecyclerView.getAdapterPositionFor
+     * @see RecyclerView.ViewHolder.getAdapterPosition
+     */
+    override fun onItemMove(fromPosition: Int, toPosition: Int): Boolean {
+        move(fromPosition, toPosition)
+        topicListener.onItemMoved(fromPosition, toPosition)
+        notifyItemMoved(fromPosition, toPosition)
+        return true
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val topic: Topic = topicList[position]
-        val title: String? = topic.title
-        if (title != null) {
-            holder.bind(title, topic)
-        }
-    }
-
-    override fun getItemCount() = topicList.size
-
-    fun addItem(topic: Topic) {
-        topicList.add(topic)
-        notifyItemInserted(topicList.size)
-    }
-
-    fun removeAt(position: Int): Topic {
-        val topic: Topic = topicList.removeAt(position)
+    /**
+     * Called when an item has been dismissed by a swipe.<br></br>
+     * <br></br>
+     * Implementations should call [RecyclerView.Adapter.notifyItemRemoved] after
+     * adjusting the underlying data to reflect this removal.
+     *
+     * @param position The position of the item dismissed.
+     *
+     * @see RecyclerView.getAdapterPositionFor
+     * @see RecyclerView.ViewHolder.getAdapterPosition
+     */
+    override fun onItemDismiss(position: Int) {
+        val topic: Topic = removeAt(position)
+        topicListener.onItemDeleted(topic)
         notifyItemRemoved(position)
-        return topic
+        //
     }
 
-    inner class ViewHolder(view: ViewGroup) : RecyclerView.ViewHolder(
-            LayoutInflater.from(view.context).inflate(R.layout.row_item, view, false)) {
-
-        fun bind(name: String, topic: Topic) = with(itemView) {
-            rowName.text = name
-            tag = topic
-            setOnClickListener(onClickListener)
-        }
+    companion object {
+        private val log = LoggerFactory.getLogger(TopicListAdapter::class.java)
     }
 }
-
