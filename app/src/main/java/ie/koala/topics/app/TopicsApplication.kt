@@ -32,5 +32,4 @@ open class TopicsApplication : Application() {
             return context as TopicsApplication
         }
     }
-
 }

@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Topics</string>
     <string name="title_topic_detail">Topic Detail</string>
@@ -25,4 +26,5 @@
         completions."
     </string>
     <string name="invalid_url">Invalid URL</string>
+    <string name="title_activity_settings">Settings</string>
 </resources>

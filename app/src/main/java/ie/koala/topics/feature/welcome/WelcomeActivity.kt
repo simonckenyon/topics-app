@@ -12,10 +12,13 @@ import com.hendraanggrian.pikasso.picasso
 import com.hendraanggrian.pikasso.transformations.circle
 import fr.tkeunebr.gravatar.Gravatar
 import ie.koala.topics.R
+import ie.koala.topics.app.Constants.NAV_MODE_NORMAL
+import ie.koala.topics.app.PreferenceHelper.defaultPrefs
 import ie.koala.topics.app.TopicsApplication
 import ie.koala.topics.app.TopicsApplication.Companion.getMyApplication
 import ie.koala.topics.feature.auth.SignInActivity
 import ie.koala.topics.feature.auth.SignUpActivity
+import ie.koala.topics.feature.settings.SettingsActivity
 import ie.koala.topics.feature.topic.TopicListActivity
 import kotlinx.android.synthetic.main.activity_welcome.*
 import kotlinx.android.synthetic.main.nav_header_main.view.*
@@ -60,10 +63,21 @@ class WelcomeActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
-            drawer_layout.closeDrawer(GravityCompat.START)
-        } else {
-            super.onBackPressed()
+        val prefs = defaultPrefs(this)
+        var navModeNormal: Boolean? = prefs.getBoolean(NAV_MODE_NORMAL, false)
+        when (navModeNormal) {
+            true ->
+                if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
+                    drawer_layout.closeDrawer(GravityCompat.START)
+                } else {
+                    super.onBackPressed()
+                }
+            else ->
+                if (!drawer_layout.isDrawerOpen(GravityCompat.START)) {
+                    drawer_layout.openDrawer(GravityCompat.START)
+                } else {
+                    super.onBackPressed()
+                }
         }
     }
 
@@ -80,12 +94,12 @@ class WelcomeActivity : AppCompatActivity() {
         return true
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        log.debug("onOptionsItemSelected:")
-        when (item.itemId) {
-            R.id.action_settings -> return true
-            else -> return super.onOptionsItemSelected(item)
+    override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
+        R.id.action_settings -> consume {
+            val intent = Intent(this, SettingsActivity::class.java)
+            startActivity(intent)
         }
+        else -> super.onOptionsItemSelected(item)
     }
 
     override fun onSaveInstanceState(outState: Bundle?) {
@@ -98,6 +112,11 @@ class WelcomeActivity : AppCompatActivity() {
         super.onRestoreInstanceState(savedInstanceState)
 
         navigationDrawerMenuState = savedInstanceState?.getSerializable("navigationDrawerMenuState") as MenuState
+    }
+
+    inline fun consume(f: () -> Unit): Boolean {
+        f()
+        return true
     }
 
     private fun updateNavigationMenu() {

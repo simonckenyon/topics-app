@@ -69,13 +69,22 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".feature.welcome.WelcomeActivity" />
         </activity>
-        <activity android:name=".feature.topic.TopicEditActivity"
+        <activity
+            android:name=".feature.topic.TopicEditActivity"
             android:label="@string/title_activity_topic_edit"
             android:parentActivityName=".feature.topic.TopicDetailActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".feature.topic.TopicDetailActivity" />
+        </activity>
+        <activity
+            android:name=".feature.settings.SettingsActivity"
+            android:label="@string/title_activity_settings"
+            android:parentActivityName=".feature.welcome.WelcomeActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="ie.koala.topics.feature.welcome.WelcomeActivity" />
         </activity>
     </application>
 
