@@ -15,6 +15,11 @@ import java.io.ByteArrayInputStream
 import java.io.IOException
 import java.io.InputStream
 import org.slf4j.LoggerFactory
+import android.webkit.WebResourceRequest
+import android.os.Build
+import android.annotation.TargetApi
+
+
 
 class ViewClient : WebViewClient {
 
@@ -30,7 +35,14 @@ class ViewClient : WebViewClient {
         Toast.makeText(view.context, description, Toast.LENGTH_SHORT).show()
     }
 
+    @SuppressWarnings("deprecation")
     override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
+        return handleUrl(view, url)
+    }
+
+    @TargetApi(Build.VERSION_CODES.N)
+    override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
+        val url = request.url.toString()
         return handleUrl(view, url)
     }
 
@@ -60,7 +72,7 @@ class ViewClient : WebViewClient {
         }
     }
 
-    private fun newEmailIntent(context: Context, address: String, subject: String, body: String, cc: String): Intent {
+    private fun newEmailIntent(@Suppress("UNUSED_PARAMETER") context: Context, address: String, subject: String, body: String, cc: String): Intent {
         val intent = Intent(Intent.ACTION_SEND)
         intent.putExtra(Intent.EXTRA_EMAIL, arrayOf(address))
         intent.putExtra(Intent.EXTRA_TEXT, body)
@@ -132,7 +144,6 @@ class ViewClient : WebViewClient {
             } catch (e: IOException) {
                 error("wikiResponse: io exception")
             }
-            return null
         }
 
         protected fun assetResponse(fileName: String, mimeType: String, am: AssetManager): WebResourceResponse? {
@@ -145,7 +156,6 @@ class ViewClient : WebViewClient {
             } catch (e: IOException) {
                 error("assetResponse: not found fileName=\"$fileName\"")
             }
-            return null
         }
     }
 }

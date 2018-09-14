@@ -51,13 +51,13 @@ class TopicViewHolder(itemView: View, listener: OnRecyclerItemClickListener) : B
     private fun initViews() {
         title = itemView.findViewById(R.id.title)
         handle = itemView.findViewById(R.id.handle)
-        handle!!.setOnTouchListener(View.OnTouchListener { v, event ->
+        handle!!.setOnTouchListener(View.OnTouchListener { _, event ->
             if (MotionEventCompat.getActionMasked(event) == MotionEvent.ACTION_DOWN) {
                 listener.onStartDrag(this)
             }
             false
         })
-        itemView.setOnClickListener { v -> listener.onItemClick(adapterPosition) }
+        itemView.setOnClickListener { _ -> listener.onItemClick(adapterPosition) }
 
         // Start a drag whenever the handle view it touched
     }

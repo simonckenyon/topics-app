@@ -76,9 +76,9 @@ class TopicListActivity : AppCompatActivity(), OnRecyclerItemClickListener, Topi
             override fun onChildAdded(dataSnapshot: DataSnapshot, previousChildName: String?) {
                 val topic = dataSnapshot.getValue(Topic::class.java)
                 log.debug("onChildAdded: topic added topic=${topic!!.title}")
-                topicList.add(topic!!)
+                topicList.add(topic)
                 topicList.sortWith(object : Comparator<Topic> {
-                    override fun compare(t1: Topic, t2: Topic): Int = t1.compareToByIndex(t2)
+                    override fun compare(t1: Topic, t2: Topic): Int = t1.compareToByDisplayIndex(t2)
                 })
                 adapter.setItems(topicList)
                 //snackbar(coordinator_layout_topic_list,"Topic \"${topic.title}\" added")
@@ -90,7 +90,7 @@ class TopicListActivity : AppCompatActivity(), OnRecyclerItemClickListener, Topi
                 topicList.remove(topic!!)
                 topicList.add(topic)
                 topicList.sortWith(object : Comparator<Topic> {
-                    override fun compare(t1: Topic, t2: Topic): Int = t1.compareToByIndex(t2)
+                    override fun compare(t1: Topic, t2: Topic): Int = t1.compareToByDisplayIndex(t2)
                 })
                 adapter.setItems(topicList)
                 //snackbar(coordinator_layout_topic_list,"Topic \"${topic.title}\" changed")
@@ -101,7 +101,7 @@ class TopicListActivity : AppCompatActivity(), OnRecyclerItemClickListener, Topi
                 val topic = dataSnapshot.getValue(Topic::class.java)
                 topicList.remove(topic!!)
                 topicList.sortWith(object : Comparator<Topic> {
-                    override fun compare(t1: Topic, t2: Topic): Int = t1.compareToByIndex(t2)
+                    override fun compare(t1: Topic, t2: Topic): Int = t1.compareToByDisplayIndex(t2)
                 })
                 adapter.setItems(topicList)
                 //snackbar(coordinator_layout_topic_list,"Topic \"${topic.title}\" removed")
@@ -112,7 +112,7 @@ class TopicListActivity : AppCompatActivity(), OnRecyclerItemClickListener, Topi
                 val topic = dataSnapshot.getValue(Topic::class.java)
                 topicList.remove(topic!!)
                 topicList.sortWith(object : Comparator<Topic> {
-                    override fun compare(t1: Topic, t2: Topic): Int = t1.compareToByIndex(t2)
+                    override fun compare(t1: Topic, t2: Topic): Int = t1.compareToByDisplayIndex(t2)
                 })
                 topicList.add(topic)
                 adapter.setItems(topicList)
@@ -243,15 +243,15 @@ class TopicListActivity : AppCompatActivity(), OnRecyclerItemClickListener, Topi
             for (i in fromPosition until toPosition) {
                 val fromChildId: String = topicList[i].id
                 val toChildId: String = topicList[i + 1].id
-                topicsDatabaseReference.child(fromChildId).child("index").setValue(i + 1)
-                topicsDatabaseReference.child(toChildId).child("index").setValue(i)
+                topicsDatabaseReference.child(fromChildId).child("displayIndex").setValue(i + 1)
+                topicsDatabaseReference.child(toChildId).child("displayIndex").setValue(i)
             }
         } else {
             for (i in fromPosition downTo toPosition + 1) {
                 val fromChildId: String = topicList[i].id
                 val toChildId: String = topicList[i - 1].id
-                topicsDatabaseReference.child(fromChildId).child("index").setValue(i - 1)
-                topicsDatabaseReference.child(toChildId).child("index").setValue(i)
+                topicsDatabaseReference.child(fromChildId).child("displayIndex").setValue(i - 1)
+                topicsDatabaseReference.child(toChildId).child("displayIndex").setValue(i)
             }
         }
 

@@ -57,7 +57,7 @@ abstract class BaseViewHolder<T, L : BaseRecyclerListener> : RecyclerView.ViewHo
      * @author Leonid Ustenko (Leo.Droidcoder@gmail.com)
      * @since 1.0.0
      */
-    fun onBind(item: T, payloads: MutableList<Any>) {
+    fun onBind(item: T, @Suppress("UNUSED_PARAMETER") payloads: MutableList<Any>) {
         onBind(item)
     }
 

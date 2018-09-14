@@ -4,7 +4,7 @@ import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class Topic(var id: String = "", var index: Int = -1, var title: String = "", var content: String = "")
+data class Topic(var id: String = "", var displayIndex: Int = -1, var title: String = "", var content: String = "")
     : Parcelable {
 
     override fun equals(other: Any?): Boolean {
@@ -17,8 +17,8 @@ data class Topic(var id: String = "", var index: Int = -1, var title: String = "
         return id.hashCode()
     }
 
-    fun compareToByIndex(other: Topic): Int {
-        return index.compareTo(other.index)
+    fun compareToByDisplayIndex(other: Topic): Int {
+        return displayIndex.compareTo(other.displayIndex)
     }
 
     companion object Factory {

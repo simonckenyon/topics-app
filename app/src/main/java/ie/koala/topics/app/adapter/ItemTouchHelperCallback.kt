@@ -94,7 +94,7 @@ class ItemTouchHelperCallback<T, L : BaseRecyclerListener, VH : BaseViewHolder<T
         viewHolder.itemView.alpha = ALPHA_FULL
         if (viewHolder is BaseViewHolder<*, *>) {
             // Tell the view holder it's time to restore the idle state
-            val itemViewHolder = viewHolder as BaseViewHolder<*, *>
+            val itemViewHolder = viewHolder
             itemViewHolder.onItemClear()
         }
     }
