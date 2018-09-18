@@ -191,18 +191,6 @@ class TopicListActivity : AppCompatActivity(), OnRecyclerItemClickListener, Topi
         adapter.setItems(topicList)
         recyclerView.adapter = adapter
 
-        // this was the original
-//        val swipeHandler = object : SwipeToDeleteCallback(this) {
-//            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-//                val topic: Topic = adapter.removeAt(viewHolder.adapterPosition)
-//                topicsDatabaseReference.child(topic.id).removeValue()
-//            }
-//        }
-//
-//        val itemTouchHelper = ItemTouchHelper(swipeHandler)
-//        itemTouchHelper.attachToRecyclerView(recyclerView)
-
-        // and this is the latest
         val callback = ItemTouchHelperCallback(adapter)
         itemTouchHelper = ItemTouchHelper(callback)
         itemTouchHelper.attachToRecyclerView(recyclerView)

@@ -2,16 +2,25 @@ package ie.koala.topics.feature.auth
 
 import android.app.Activity
 import android.content.Intent
+import android.database.Cursor
 import android.os.Bundle
+import android.provider.ContactsContract
+import android.support.v4.app.LoaderManager
+import android.support.v4.content.CursorLoader
+import android.support.v4.content.Loader
 import android.support.v7.app.AppCompatActivity
 import android.view.View
+import android.view.inputmethod.EditorInfo
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import ie.koala.topics.R
 import kotlinx.android.synthetic.main.activity_sign_up.*
 import org.slf4j.LoggerFactory
+import java.util.*
 
-class SignUpActivity : AppCompatActivity() {
+
+class SignUpActivity() : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor> {
 
     private var auth: FirebaseAuth? = null
 
@@ -28,18 +37,34 @@ class SignUpActivity : AppCompatActivity() {
 
         btn_sign_up.setOnClickListener { signup() }
 
-        btn_sign_in.setOnClickListener {
-            // Finish the registration screen and return to the Login activity
-            val intent = Intent(applicationContext, SignInActivity::class.java)
-            startActivity(intent)
-            finish()
-            overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out)
-        }
+        btn_sign_in.setOnClickListener { signin() }
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        input_reEnterPassword.setOnEditorActionListener() { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                signin()
+                true
+            } else {
+                false
+            }
+        }
+    }
+
+    /**
+     * Finish the registration screen and return to the Login activity
+     */
+    private fun signin() {
+
+        log.debug("signin")
+
+        val intent = Intent(applicationContext, SignInActivity::class.java)
+        startActivity(intent)
+        finish()
+        overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out)
     }
 
     private fun signup() {
-        log.debug("Signup")
+        log.debug("signup")
 
         if (!validate()) {
             onSignupFailed()
@@ -121,4 +146,65 @@ class SignUpActivity : AppCompatActivity() {
                     }
                 }
     }
+
+    private interface ProfileQuery {
+        companion object {
+            val PROJECTION = arrayOf(ContactsContract.CommonDataKinds.Email.ADDRESS, ContactsContract.CommonDataKinds.Email.IS_PRIMARY)
+
+            val ADDRESS = 0
+            val IS_PRIMARY = 1
+        }
+    }
+
+    /**
+     * see https://stackoverflow.com/a/42001556
+     *
+     * @param i
+     * @param bundle
+     * @return
+     */
+    override fun onCreateLoader(i: Int, bundle: Bundle?): Loader<Cursor> {
+        return CursorLoader(this,
+                // Retrieve data rows for the device user's 'profile' contact.
+                ContactsContract.Data.CONTENT_URI, ProfileQuery.PROJECTION,
+
+                // Select only email addresses.
+                ContactsContract.Contacts.Data.MIMETYPE + " = ?", arrayOf(ContactsContract.CommonDataKinds.Email
+                .CONTENT_ITEM_TYPE),
+
+                // Show primary email addresses first. Note that there won't be
+                // a primary email address if the user hasn't specified one.
+                ContactsContract.Contacts.Data.IS_PRIMARY + " DESC")
+    }
+
+    override fun onLoadFinished(loader: Loader<Cursor>, cursor: Cursor) {
+        log.debug("onLoadFinished")
+
+        val emails = ArrayList<String>()
+        cursor.moveToFirst()
+        while (!cursor.isAfterLast) {
+            emails.add(cursor.getString(ProfileQuery.ADDRESS))
+            cursor.moveToNext()
+        }
+
+        addEmailsToAutoComplete(emails)
+    }
+
+    override fun onLoaderReset(loader: Loader<Cursor>) {
+        log.debug("onLoaderReset")
+    }
+
+    /**
+     * Create adapter to tell the AutoCompleteTextView what to show in its dropdown list.
+     *
+     * @param emailAddressCollection
+     */
+    private fun addEmailsToAutoComplete(emailAddressCollection: List<String>) {
+        log.debug("addEmailsToAutoComplete: email count=" + emailAddressCollection.size)
+
+        val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, emailAddressCollection)
+
+        input_email.setAdapter(adapter)
+    }
+
 }
