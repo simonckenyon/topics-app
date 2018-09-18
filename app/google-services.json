@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "793768747247",
+    "firebase_url": "https://koala-topics.firebaseio.com",
+    "project_id": "koala-topics",
+    "storage_bucket": "koala-topics.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:793768747247:android:814c57ac6afcd0e9",
+        "android_client_info": {
+          "package_name": "ie.koala.topics"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "793768747247-apv1h859qvmvvvh4gccbtaghur54a2h0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "ie.koala.topics",
+            "certificate_hash": "1b4677b723835c4e15a73a5246243fb1c96fb82f"
+          }
+        },
+        {
+          "client_id": "793768747247-u91us4oh744q34htms9e00ppeai9tj8v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA1SIwRdR37DFk0Myh_Px9CT4DuGT4r2ps"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "793768747247-u91us4oh744q34htms9e00ppeai9tj8v.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
