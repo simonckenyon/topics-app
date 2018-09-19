@@ -1,5 +1,6 @@
 package ie.koala.topics.feature.auth
 
+import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.database.Cursor
@@ -9,19 +10,28 @@ import android.support.v4.app.LoaderManager
 import android.support.v4.content.CursorLoader
 import android.support.v4.content.Loader
 import android.support.v7.app.AppCompatActivity
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.ArrayAdapter
-import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import ie.koala.topics.R
 import kotlinx.android.synthetic.main.activity_sign_up.*
+import org.jetbrains.anko.design.snackbar
 import org.slf4j.LoggerFactory
 import java.util.*
+import android.Manifest.permission
+import android.Manifest.permission.WRITE_CALENDAR
+import android.content.pm.PackageManager
+import android.support.v4.app.ActivityCompat
+import android.support.v4.content.ContextCompat
+
 
 class SignUpActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor> {
 
     private var auth: FirebaseAuth? = null
+    private var adapter: ArrayAdapter<String>? =  null
 
     private val log = LoggerFactory.getLogger(SignUpActivity::class.java)
 
@@ -34,6 +44,21 @@ class SignUpActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor
 
         auth = FirebaseAuth.getInstance()
 
+        input_email.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                log.debug("afterTextChanged s=${s}")
+                adapter?.run {
+                    notifyDataSetChanged()
+                }
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            }
+        })
+
         btn_sign_up.setOnClickListener { signup() }
 
         btn_sign_in.setOnClickListener { signin() }
@@ -41,12 +66,69 @@ class SignUpActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor
 
         input_reEnterPassword.setOnEditorActionListener { _, actionId, _ ->
             when (actionId) {
-            EditorInfo.IME_ACTION_DONE -> signin()
-            else ->false
+                EditorInfo.IME_ACTION_DONE -> signin()
+                else -> false
             }
         }
     }
 
+    /**
+     * Dispatch onResume() to fragments.  Note that for better inter-operation
+     * with older versions of the platform, at the point of this call the
+     * fragments attached to the activity are *not* resumed.  This means
+     * that in some cases the previous state may still be saved, not allowing
+     * fragment transactions that modify the state.  To correctly interact
+     * with fragments in their proper state, you should instead override
+     * [.onResumeFragments].
+     */
+    override fun onResume() {
+        log.debug("onResume")
+        super.onResume()
+        val permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS)
+        if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
+            // User may have declined earlier, ask Android if we should show him a reason
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_CONTACTS)) {
+                // show an explanation to the user
+                // Good practise: don't block thread after the user sees the explanation, try again to request the permission.
+            } else {
+                // request the permission.
+                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is a integer constant
+                ActivityCompat.requestPermissions(this, arrayOf<String>(Manifest.permission.READ_CONTACTS), MY_PERMISSIONS_REQUEST_READ_CONTACTS)
+                // The callback method gets the result of the request.
+            }
+        } else {
+            // got permission use it
+            startLoader()
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int,
+                                            permissions: Array<String>, grantResults: IntArray) {
+        when (requestCode) {
+            MY_PERMISSIONS_REQUEST_READ_CONTACTS -> {
+                // If request is cancelled, the result arrays are empty.
+                if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+                    startLoader()
+                } else {
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return
+            }
+
+            // Add other 'when' lines to check for other
+            // permissions this app might request.
+            else -> {
+                // Ignore all other requests.
+            }
+        }
+    }
+
+    private fun startLoader() {
+        getSupportLoaderManager().initLoader(LOADER_ID, null, this);
+    }
     /**
      * Finish the registration screen and return to the Login activity
      */
@@ -65,28 +147,14 @@ class SignUpActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor
         log.debug("signup")
 
         return if (!validate()) {
-            onSignupFailed()
+            btn_sign_up.isEnabled = true
             false
         } else {
             btn_sign_up.isEnabled = false
             val email = input_email.text.toString()
             val password = input_password.text.toString()
             createAccount(email, password)
-            true
         }
-    }
-
-    private fun onSignupSuccess() {
-        btn_sign_up.isEnabled = true
-
-        setResult(Activity.RESULT_OK, null)
-        finish()
-    }
-
-    private fun onSignupFailed() {
-        btn_sign_up.isEnabled = true
-
-        Toast.makeText(baseContext, "Login failed", Toast.LENGTH_LONG).show()
     }
 
     private fun validate(): Boolean {
@@ -120,30 +188,36 @@ class SignUpActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor
         return valid
     }
 
-    private fun createAccount(email: String, password: String) {
+    private fun createAccount(email: String, password: String): Boolean {
         log.debug("createAccount: $email")
 
-        if (!validate()) {
-            return
-        }
-
-        progress_bar.visibility = View.VISIBLE
-
-        auth!!.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this) { task ->
-                    if (task.isSuccessful) {
-                        log.debug("createAccount: success")
-
+        return if (!validate()) {
+            false
+        } else {
+            progress_bar.visibility = View.VISIBLE
+            auth!!
+                    .createUserWithEmailAndPassword(email, password)
+                    .addOnCompleteListener(this) { task ->
                         progress_bar.visibility = View.INVISIBLE
-                        onSignupSuccess()
-                    } else {
-                        log.debug("createAccount: failed", task.exception)
-                        Toast.makeText(applicationContext, "Authentication failed", Toast.LENGTH_LONG).show()
-
-                        progress_bar.visibility = View.INVISIBLE
-                        onSignupFailed()
+                        btn_sign_up.isEnabled = true
+                        if (task.isSuccessful) {
+                            log.debug("createAccount: success")
+                            setResult(Activity.RESULT_OK, null)
+                            finish()
+                        } else {
+                            val message = task.exception?.message ?: "Authentication failed"
+                            log.debug("createAccount: failed", message)
+                            snackbar(coordinator_layout_sign_up, message)
+                        }
                     }
-                }
+            true
+        }
+    }
+
+    companion object {
+        private const val LOADER_ID = 1
+
+        private const val MY_PERMISSIONS_REQUEST_READ_CONTACTS = 100
     }
 
     private interface ProfileQuery {
@@ -162,6 +236,8 @@ class SignUpActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor
      * @return
      */
     override fun onCreateLoader(i: Int, bundle: Bundle?): Loader<Cursor> {
+        log.debug("onCreateLoader")
+
         return CursorLoader(this,
                 // Retrieve data rows for the device user's 'profile' contact.
                 ContactsContract.Data.CONTENT_URI, ProfileQuery.PROJECTION,
@@ -200,7 +276,7 @@ class SignUpActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor
     private fun addEmailsToAutoComplete(emailAddressCollection: List<String>) {
         log.debug("addEmailsToAutoComplete: email count=" + emailAddressCollection.size)
 
-        val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, emailAddressCollection)
+        adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, emailAddressCollection)
 
         input_email.setAdapter(adapter)
     }
