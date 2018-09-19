@@ -19,8 +19,7 @@ import kotlinx.android.synthetic.main.activity_sign_up.*
 import org.slf4j.LoggerFactory
 import java.util.*
 
-
-class SignUpActivity() : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor> {
+class SignUpActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor> {
 
     private var auth: FirebaseAuth? = null
 
@@ -40,12 +39,10 @@ class SignUpActivity() : AppCompatActivity(), LoaderManager.LoaderCallbacks<Curs
         btn_sign_in.setOnClickListener { signin() }
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        input_reEnterPassword.setOnEditorActionListener() { _, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
-                signin()
-                true
-            } else {
-                false
+        input_reEnterPassword.setOnEditorActionListener { _, actionId, _ ->
+            when (actionId) {
+            EditorInfo.IME_ACTION_DONE -> signin()
+            else ->false
             }
         }
     }
@@ -53,7 +50,7 @@ class SignUpActivity() : AppCompatActivity(), LoaderManager.LoaderCallbacks<Curs
     /**
      * Finish the registration screen and return to the Login activity
      */
-    private fun signin() {
+    private fun signin(): Boolean {
 
         log.debug("signin")
 
@@ -61,21 +58,22 @@ class SignUpActivity() : AppCompatActivity(), LoaderManager.LoaderCallbacks<Curs
         startActivity(intent)
         finish()
         overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out)
+        return true
     }
 
-    private fun signup() {
+    private fun signup(): Boolean {
         log.debug("signup")
 
-        if (!validate()) {
+        return if (!validate()) {
             onSignupFailed()
-            return
+            false
+        } else {
+            btn_sign_up.isEnabled = false
+            val email = input_email.text.toString()
+            val password = input_password.text.toString()
+            createAccount(email, password)
+            true
         }
-
-        btn_sign_up.isEnabled = false
-
-        val email = input_email.text.toString()
-        val password = input_password.text.toString()
-        createAccount(email, password)
     }
 
     private fun onSignupSuccess() {
@@ -124,6 +122,7 @@ class SignUpActivity() : AppCompatActivity(), LoaderManager.LoaderCallbacks<Curs
 
     private fun createAccount(email: String, password: String) {
         log.debug("createAccount: $email")
+
         if (!validate()) {
             return
         }
@@ -151,8 +150,7 @@ class SignUpActivity() : AppCompatActivity(), LoaderManager.LoaderCallbacks<Curs
         companion object {
             val PROJECTION = arrayOf(ContactsContract.CommonDataKinds.Email.ADDRESS, ContactsContract.CommonDataKinds.Email.IS_PRIMARY)
 
-            val ADDRESS = 0
-            val IS_PRIMARY = 1
+            const val ADDRESS = 0
         }
     }
 

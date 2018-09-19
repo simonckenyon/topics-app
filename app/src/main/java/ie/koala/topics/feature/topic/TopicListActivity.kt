@@ -27,13 +27,13 @@ import java.util.*
  */
 class TopicListActivity : AppCompatActivity(), OnRecyclerItemClickListener, TopicListener {
 
-    lateinit var itemTouchHelper: ItemTouchHelper
+    private var topicList: MutableList<Topic> = mutableListOf()
 
-    var topicList: MutableList<Topic> = mutableListOf<Topic>()
-    lateinit var adapter: TopicListAdapter
-    lateinit var database: FirebaseDatabase
-    lateinit var topicsDatabaseReference: DatabaseReference
-    lateinit var topicListener: ChildEventListener
+    private lateinit var itemTouchHelper: ItemTouchHelper
+    private lateinit var adapter: TopicListAdapter
+    private lateinit var database: FirebaseDatabase
+    private lateinit var topicsDatabaseReference: DatabaseReference
+    private lateinit var topicListener: ChildEventListener
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,9 +77,7 @@ class TopicListActivity : AppCompatActivity(), OnRecyclerItemClickListener, Topi
                 val topic = dataSnapshot.getValue(Topic::class.java)
                 log.debug("onChildAdded: topic added topic=${topic!!.title}")
                 topicList.add(topic)
-                topicList.sortWith(object : Comparator<Topic> {
-                    override fun compare(t1: Topic, t2: Topic): Int = t1.compareToByDisplayIndex(t2)
-                })
+                topicList.sortWith(Comparator { t1, t2 -> t1.compareToByDisplayIndex(t2) })
                 adapter.setItems(topicList)
                 //snackbar(coordinator_layout_topic_list,"Topic \"${topic.title}\" added")
             }
@@ -89,9 +87,7 @@ class TopicListActivity : AppCompatActivity(), OnRecyclerItemClickListener, Topi
                 val topic = dataSnapshot.getValue(Topic::class.java)
                 topicList.remove(topic!!)
                 topicList.add(topic)
-                topicList.sortWith(object : Comparator<Topic> {
-                    override fun compare(t1: Topic, t2: Topic): Int = t1.compareToByDisplayIndex(t2)
-                })
+                topicList.sortWith(Comparator { t1, t2 -> t1.compareToByDisplayIndex(t2) })
                 adapter.setItems(topicList)
                 //snackbar(coordinator_layout_topic_list,"Topic \"${topic.title}\" changed")
             }
@@ -100,9 +96,7 @@ class TopicListActivity : AppCompatActivity(), OnRecyclerItemClickListener, Topi
                 log.debug("onChildRemoved:" + dataSnapshot.key)
                 val topic = dataSnapshot.getValue(Topic::class.java)
                 topicList.remove(topic!!)
-                topicList.sortWith(object : Comparator<Topic> {
-                    override fun compare(t1: Topic, t2: Topic): Int = t1.compareToByDisplayIndex(t2)
-                })
+                topicList.sortWith(Comparator { t1, t2 -> t1.compareToByDisplayIndex(t2) })
                 adapter.setItems(topicList)
                 //snackbar(coordinator_layout_topic_list,"Topic \"${topic.title}\" removed")
             }
@@ -111,9 +105,7 @@ class TopicListActivity : AppCompatActivity(), OnRecyclerItemClickListener, Topi
                 log.debug("onChildMoved:" + dataSnapshot.key)
                 val topic = dataSnapshot.getValue(Topic::class.java)
                 topicList.remove(topic!!)
-                topicList.sortWith(object : Comparator<Topic> {
-                    override fun compare(t1: Topic, t2: Topic): Int = t1.compareToByDisplayIndex(t2)
-                })
+                topicList.sortWith(Comparator { t1, t2 -> t1.compareToByDisplayIndex(t2) })
                 topicList.add(topic)
                 adapter.setItems(topicList)
                 //snackbar(coordinator_layout_topic_list, "Topic \"${topic.title}\" moved")
@@ -138,12 +130,12 @@ class TopicListActivity : AppCompatActivity(), OnRecyclerItemClickListener, Topi
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         log.debug("onOptionsItemSelected:")
-        when (item.getItemId()) {
+        return when (item.itemId) {
             android.R.id.home -> {
                 NavUtils.navigateUpFromSameTask(this)
-                return true
+                true
             }
-            else -> return super.onOptionsItemSelected(item)
+            else -> super.onOptionsItemSelected(item)
         }
     }
 
@@ -185,7 +177,7 @@ class TopicListActivity : AppCompatActivity(), OnRecyclerItemClickListener, Topi
         adapter.topicListener = this
         recyclerView.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
         recyclerView.setHasFixedSize(true)
-        recyclerView.setAdapter(adapter)
+        recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(this)
 
         adapter.setItems(topicList)
@@ -211,7 +203,7 @@ class TopicListActivity : AppCompatActivity(), OnRecyclerItemClickListener, Topi
      * @param position clicked item position.
      */
     override fun onItemClick(position: Int) {
-        val clickedTopic: Topic = adapter.getItem(position);
+        val clickedTopic: Topic = adapter.getItem(position)
         log.debug("onItemClick: topic=${clickedTopic.title}")
         val intent = Intent(this, TopicDetailActivity::class.java).apply {
             putExtra(Topic.ARG_TOPIC, clickedTopic)
