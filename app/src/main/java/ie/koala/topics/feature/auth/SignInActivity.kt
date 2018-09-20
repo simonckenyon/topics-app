@@ -75,7 +75,7 @@ class SignInActivity : AppCompatActivity() {
     }
 
 //    // save the user's profile into Firebase so we can list users,
-//// use them in Security and Firebase Rules, and show profiles
+//    // use them in Security and Firebase Rules, and show profiles
 //    fun writeUserData(userId, name, email, imageUrl) {
 //        firebase.database().ref('users/' + userId).set({
 //            username: name,

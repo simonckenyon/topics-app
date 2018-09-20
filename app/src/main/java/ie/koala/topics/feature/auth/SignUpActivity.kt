@@ -206,7 +206,7 @@ class SignUpActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor
                             finish()
                         } else {
                             val message = task.exception?.message ?: "Authentication failed"
-                            log.debug("createAccount: failed", message)
+                            log.debug("createAccount: failed (${message})")
                             snackbar(coordinator_layout_sign_up, message)
                         }
                     }

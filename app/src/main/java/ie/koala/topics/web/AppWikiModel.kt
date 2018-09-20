@@ -7,7 +7,7 @@ class AppWikiModel : WikiModel("assets://images/\${image}", "assets://wiki/\${ti
     companion object {
 
         init {
-            Configuration.DEFAULT_CONFIGURATION.addTokenTag("info", InfoTag())
+            Configuration().addTokenTag("info", InfoTag())
         }
     }
 

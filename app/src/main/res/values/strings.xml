@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Topics</string>
+    <string name="app_name">Koala Topics</string>
     <string name="title_topic_detail">Topic Detail</string>
     <string name="title_activity_main">Koala Topics</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -27,4 +27,17 @@
     </string>
     <string name="invalid_url">Invalid URL</string>
     <string name="title_activity_settings">Settings</string>
+    <string name="instructions_reset_password">To reset password, enter your email, press the button and check mail to follow instruction.</string>
+    <string name="hint_email">Email</string>
+    <string name="button_reset_password">Reset Password</string>
+    <string name="hint_password">Password</string>
+    <string name="button_sign_in">Sign In</string>
+    <string name="button_forgot_password">Forgot password</string>
+    <string name="button_sign_up">Sign Up</string>
+    <string name="hint_re_enter_password">Re-enter Password</string>
+    <string name="hint_topic_title">Title</string>
+    <string name="button_save">Save</string>
+    <string name="hint_topic_content">Content</string>
+    <string name="description_koala_logo">Koala logo</string>
+    <string name="description_drag_handle">TODO</string>
 </resources>

@@ -10,6 +10,7 @@
     tools:openDrawer="start">
 
     <android.support.design.widget.CoordinatorLayout
+        android:id="@+id/coordinator_layout_welcome"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".feature.welcome.WelcomeActivity">
@@ -21,8 +22,8 @@
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="?attr/colorPrimary" />
+                android:layout_height="?android:attr/actionBarSize"
+                android:background="?android:attr/colorPrimary" />
 
         </android.support.design.widget.AppBarLayout>
 
@@ -38,6 +39,7 @@
                 android:layout_height="228dp"
                 android:layout_gravity="center_horizontal"
                 android:src="@drawable/koala"
+                android:contentDescription="@string/description_koala_logo"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
@@ -50,7 +52,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="Koala Topics"
+                android:text="@string/app_name"
                 android:textAppearance="@style/TextAppearance.AppCompat.Title"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

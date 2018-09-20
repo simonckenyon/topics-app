@@ -49,6 +49,17 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/ASL2.0'
+    }
 }
 
 androidExtensions {
@@ -63,12 +74,12 @@ dependencies {
     //implementation 'com.android.support:multidex:1.0.3'
 
     implementation "com.android.support:appcompat-v7:$support_version"
-    implementation "com.android.support.constraint:constraint-layout:1.1.2"
+    implementation "com.android.support.constraint:constraint-layout:1.1.3"
     implementation "com.android.support:design:$support_version"
     implementation "com.android.support:recyclerview-v7:$support_version"
     implementation "com.android.support:support-v4:$support_version"
 
-    implementation 'com.google.firebase:firebase-database:16.0.1'
+    implementation 'com.google.firebase:firebase-database:16.0.2'
     implementation 'com.google.firebase:firebase-core:16.0.3'
     implementation 'com.google.firebase:firebase-auth:16.0.3'
 
@@ -84,7 +95,12 @@ dependencies {
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation "com.hendraanggrian.pikasso:pikasso:$pikasso_version"
 
-    implementation 'info.bliki.wiki:bliki-core:3.0.19'
+    implementation('info.bliki.wiki:bliki-core:3.1.0') {
+        exclude group: 'com.github.tony19', module: 'logback-android'
+        exclude group: 'ch.qos.logback', module: 'logback-classic'
+        exclude group: 'org.slf4j', module: 'slf4j-api'
+    }
+
     implementation 'com.google.guava:guava:23.0'
 
     testImplementation 'junit:junit:4.12'
