@@ -29,15 +29,15 @@ class AddTopicDialog(ui: AnkoContext<View>) {
                     verticalLayout {
                         padding = dip(ACTIVITY_PADDING)
 
-                        textView("Add Topic") {
+                        textView(R.string.title_add_topic) {
                             textSize = 24f
-                            textColor = context.getColor(R.color.black)
+                            textColor = R.color.black
                         }.lparams {
                             bottomMargin = dip(ACTIVITY_PADDING)
                         }
 
                         textInputLayout {
-                            hint = "Title"
+                            hint = context.getString(R.string.title_topic)
                             topicTitleText = textInputEditText {
                                 textSize = 16f
                             }

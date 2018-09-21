@@ -8,10 +8,8 @@ import info.bliki.wiki.model.IWikiModel
 import info.bliki.wiki.tags.HTMLTag
 import info.bliki.wiki.tags.util.INoBodyParsingTag
 import ie.koala.topics.app.*
-import ie.koala.topics.app.TopicsApplication.Companion.getMyApplication
 
 class InfoTag : HTMLTag("info"), INoBodyParsingTag {
-
 
     @Throws(IOException::class)
     override fun renderHTML(converter: ITextConverter, buf: Appendable, model: IWikiModel) {
@@ -19,16 +17,12 @@ class InfoTag : HTMLTag("info"), INoBodyParsingTag {
         val tagAtttributes = node.attributes
         val keysSet = tagAtttributes.keys
         buf.append("<p>")
-        val application: TopicsApplication = getMyApplication()
         for (str in keysSet) {
-            if (str == "timestamp") {
-                buf.append(application.versionName)
-            } else if (str == "name") {
-                buf.append(application.versionName)
-            } else if (str == "code") {
-                buf.append(application.versionCode)
-            } else if (str == "githash") {
-                buf.append(application.versionGitHash)
+            when (str) {
+                "timestamp" -> buf.append(TopicsApplication.versionName)
+                "name" -> buf.append(TopicsApplication.versionName)
+                "code" -> buf.append(TopicsApplication.versionCode)
+                "githash" -> buf.append(TopicsApplication.versionGitHash)
             }
         }
         buf.append("</p>")

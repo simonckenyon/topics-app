@@ -19,17 +19,7 @@ import android.webkit.WebResourceRequest
 import android.os.Build
 import android.annotation.TargetApi
 
-
-
-class ViewClient : WebViewClient {
-
-    protected var replacementMap: Map<String, String>? = null
-
-    constructor() {}
-
-    constructor(replacementMap: Map<String, String>?) {
-        this.replacementMap = replacementMap
-    }
+class ViewClient(private var replacementMap: Map<String, String>?) : WebViewClient() {
 
     override fun onReceivedError(view: WebView, errorCode: Int, description: String, failingUrl: String) {
         Toast.makeText(view.context, description, Toast.LENGTH_SHORT).show()
@@ -109,27 +99,21 @@ class ViewClient : WebViewClient {
 
     companion object {
 
-        val log = LoggerFactory.getLogger(ViewClient::class.java)
+        private val log = LoggerFactory.getLogger(ViewClient::class.java)
 
         fun getMimeType(fileName: String): String {
-            return if (fileName.endsWith("png")) {
-                "image/png"
-            } else if (fileName.endsWith("jpg")) {
-                "image/jpeg"
-            } else if (fileName.endsWith("html")) {
-                "text/html"
-            } else if (fileName.endsWith("wiki")) {
-                "text/html"
-            } else if (fileName.endsWith("js")) {
-                "text/javascript"
-            } else if (fileName.endsWith("css")) {
-                "text/css"
-            } else {
-                ""
+            return when {
+                fileName.endsWith("png") -> "image/png"
+                fileName.endsWith("jpg") -> "image/jpeg"
+                fileName.endsWith("html") -> "text/html"
+                fileName.endsWith("wiki") -> "text/html"
+                fileName.endsWith("js") -> "text/javascript"
+                fileName.endsWith("css") -> "text/css"
+                else -> ""
             }
         }
 
-        protected fun wikiResponse(fileName: String, mimeType: String, am: AssetManager): WebResourceResponse? {
+        private fun wikiResponse(fileName: String, mimeType: String, am: AssetManager): WebResourceResponse? {
             val inputStream: InputStream
             val htmlStream: InputStream
             try {
@@ -138,7 +122,7 @@ class ViewClient : WebViewClient {
                 val wikiModel = AppWikiModel()
                 val wikiStr = String(ByteStreams.toByteArray(inputStream))
                 val htmlStr = wikiModel.render(wikiStr)
-                log.debug("html=\"" + htmlStr + "\"")
+                log.debug("html=\"$htmlStr\"")
                 htmlStream = ByteArrayInputStream(htmlStr.toByteArray(charset(encoding)))
                 return WebResourceResponse(mimeType, encoding, htmlStream)
             } catch (e: IOException) {
@@ -146,13 +130,13 @@ class ViewClient : WebViewClient {
             }
         }
 
-        protected fun assetResponse(fileName: String, mimeType: String, am: AssetManager): WebResourceResponse? {
-            log.debug("fileName=" + fileName);
-            val in_s: InputStream
+        private fun assetResponse(fileName: String, mimeType: String, am: AssetManager): WebResourceResponse? {
+            log.debug("fileName=$fileName")
+            val stream: InputStream
             try {
-                in_s = am.open(fileName)
+                stream = am.open(fileName)
                 val encoding = "UTF-8"
-                return WebResourceResponse(mimeType, encoding, in_s)
+                return WebResourceResponse(mimeType, encoding, stream)
             } catch (e: IOException) {
                 error("assetResponse: not found fileName=\"$fileName\"")
             }

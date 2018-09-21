@@ -38,8 +38,8 @@ import ie.koala.topics.R.id.handle
 
 class TopicViewHolder(itemView: View, listener: OnRecyclerItemClickListener) : BaseViewHolder<Topic, OnRecyclerItemClickListener>(itemView, listener) {
 
-    private var title: TextView? = null
-    private var handle: ImageView? = null
+    private lateinit var title: TextView
+    private lateinit var handle: ImageView
 
     init {
         initViews()
@@ -51,12 +51,12 @@ class TopicViewHolder(itemView: View, listener: OnRecyclerItemClickListener) : B
     private fun initViews() {
         title = itemView.findViewById(R.id.title)
         handle = itemView.findViewById(R.id.handle)
-        handle!!.setOnTouchListener(View.OnTouchListener { _, event ->
+        (handle as View).setOnTouchListener { _, event ->
             if (MotionEventCompat.getActionMasked(event) == MotionEvent.ACTION_DOWN) {
                 listener.onStartDrag(this)
             }
             false
-        })
+        }
         itemView.setOnClickListener { _ -> listener.onItemClick(adapterPosition) }
 
         // Start a drag whenever the handle view it touched
@@ -64,7 +64,7 @@ class TopicViewHolder(itemView: View, listener: OnRecyclerItemClickListener) : B
 
     override fun onBind(item: Topic) {
         // bind data to the views
-        title!!.setText(item.title)
+        title.text = item.title
     }
 
     /**

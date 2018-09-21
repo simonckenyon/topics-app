@@ -17,9 +17,8 @@ import org.slf4j.LoggerFactory
 
 class TopicDetailActivity : AppCompatActivity() {
 
-    lateinit var mDatabase: DatabaseReference
-
-    private var topic: Topic? = null
+    private lateinit var mDatabase: DatabaseReference
+    private lateinit var topic: Topic
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,12 +32,9 @@ class TopicDetailActivity : AppCompatActivity() {
 
         mDatabase = FirebaseDatabase.getInstance().reference
 
-        topic = intent.getParcelableExtra<Topic>(ARG_TOPIC)
+        topic = intent.getParcelableExtra(ARG_TOPIC)
         log.debug("onCreate: topic=$topic")
-
-        topic?.let { topic ->
-            updateContent(topic)
-        }
+        updateContent(topic)
 
         fab.setOnClickListener {
             val intent = Intent(this, TopicEditActivity::class.java)
@@ -57,7 +53,7 @@ class TopicDetailActivity : AppCompatActivity() {
 
         if (requestCode == REQUEST_TOPIC_EDIT) {
             if (resultCode == Activity.RESULT_OK) {
-                val t: Topic = data.getParcelableExtra<Topic>(ARG_TOPIC)
+                val t: Topic = data.getParcelableExtra(ARG_TOPIC)
                 log.debug("onActivityResult: t=$t")
                 updateContent(t)
             }
@@ -66,17 +62,17 @@ class TopicDetailActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         log.debug("onOptionsItemSelected:")
-        when (item.getItemId()) {
+        return when (item.itemId) {
             android.R.id.home -> {
                 NavUtils.navigateUpFromSameTask(this)
-                return true
+                true
             }
-            else -> return super.onOptionsItemSelected(item)
+            else -> super.onOptionsItemSelected(item)
         }
     }
 
-    fun updateContent(t: Topic) {
-        log.debug("updateContent: t=${t}")
+    private fun updateContent(t: Topic) {
+        log.debug("updateContent: t=$t")
         topic = t
         try {
             toolbar_layout.title = t.title
@@ -88,7 +84,7 @@ class TopicDetailActivity : AppCompatActivity() {
             val htmlStr = wikiModel.render(t.content)
             wiki.loadData(htmlStr, "text/html; charset=utf-8", "UTF-8")
         } catch (e: Exception) {
-            log.debug("onCreateView: exception ", e);
+            log.debug("onCreateView: exception ", e)
             wiki.loadData("Unable to show wiki page", "text/html", "")
         }
     }

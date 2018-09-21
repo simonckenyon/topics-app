@@ -93,7 +93,7 @@ class SignInActivity : AppCompatActivity() {
     private fun onLoginFailed() {
         btn_sign_in.isEnabled = true
 
-        Toast.makeText(baseContext, "Login failed", Toast.LENGTH_LONG).show()
+        Toast.makeText(baseContext, getString(R.string.message_login_failed), Toast.LENGTH_LONG).show()
     }
 
     private fun validate(): Boolean {
@@ -103,14 +103,14 @@ class SignInActivity : AppCompatActivity() {
         val password = input_password.text.toString()
 
         if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            input_email.error = "Enter a valid email address"
+            input_email.error = getString(R.string.message_enter_valid_email_address)
             valid = false
         } else {
             input_email.error = null
         }
 
         if (password.isEmpty() || password.length < 4 || password.length > 10) {
-            input_password.error = "Password must be between 4 and 10 alphanumeric characters"
+            input_password.error = getString(R.string.message_password_length)
             valid = false
         } else {
             input_password.error = null
@@ -138,7 +138,7 @@ class SignInActivity : AppCompatActivity() {
                         onLoginSuccess()
                     } else {
                         log.debug( "signIn: failed", task.exception)
-                        Toast.makeText(applicationContext, "Authentication failed", Toast.LENGTH_LONG).show()
+                        Toast.makeText(applicationContext, getString(R.string.message_login_failed), Toast.LENGTH_LONG).show()
 
                         progress_bar.visibility = View.INVISIBLE
                         onLoginFailed()

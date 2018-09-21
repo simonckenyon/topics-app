@@ -40,4 +40,13 @@
     <string name="hint_topic_content">Content</string>
     <string name="description_koala_logo">Koala logo</string>
     <string name="description_drag_handle">TODO</string>
+    <string name="message_email_is_empty">Enter your email address</string>
+    <string name="message_check_email_for_password_reset">Check your email to complete the password reset</string>
+    <string name="button_dismiss">Dismiss</string>
+    <string name="message_could_not_send_email_for_password_reset">The reset password email could not be sent</string>
+    <string name="message_login_failed">Login failed</string>
+    <string name="message_enter_valid_email_address">Enter a valid email address</string>
+    <string name="message_password_length">Password must be between 4 and 10 alphanumeric characters</string>
+    <string name="title_add_topic">Add Topic</string>
+    <string name="title_topic">Title</string>
 </resources>

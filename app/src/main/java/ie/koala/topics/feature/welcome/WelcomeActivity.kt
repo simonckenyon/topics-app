@@ -15,7 +15,6 @@ import ie.koala.topics.R
 import ie.koala.topics.app.Constants.NAV_MODE_NORMAL
 import ie.koala.topics.app.PreferenceHelper.defaultPrefs
 import ie.koala.topics.app.TopicsApplication
-import ie.koala.topics.app.TopicsApplication.Companion.getMyApplication
 import ie.koala.topics.feature.auth.SignInActivity
 import ie.koala.topics.feature.auth.SignUpActivity
 import ie.koala.topics.feature.settings.SettingsActivity
@@ -48,11 +47,10 @@ class WelcomeActivity : AppCompatActivity() {
             updateNavigationMenu()
         }
 
-        val application: TopicsApplication = getMyApplication()
-        version_name.text = application.versionName
-        version_code.text = application.versionCode
-        version_build_timestamp.text = application.versionBuildTimestamp
-        version_git_hash.text = application.versionGitHash
+        version_name.text = TopicsApplication.versionName
+        version_code.text = TopicsApplication.versionCode
+        version_build_timestamp.text = TopicsApplication.versionBuildTimestamp
+        version_git_hash.text = TopicsApplication.versionGitHash
 
         val toggle = ActionBarDrawerToggle(
                 this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
@@ -64,7 +62,7 @@ class WelcomeActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         val prefs = defaultPrefs(this)
-        var navModeNormal: Boolean? = prefs.getBoolean(NAV_MODE_NORMAL, false)
+        val navModeNormal: Boolean = prefs.getBoolean(NAV_MODE_NORMAL, false)
         when (navModeNormal) {
             true ->
                 if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
@@ -114,7 +112,7 @@ class WelcomeActivity : AppCompatActivity() {
         navigationDrawerMenuState = savedInstanceState?.getSerializable("navigationDrawerMenuState") as MenuState
     }
 
-    inline fun consume(f: () -> Unit): Boolean {
+    private inline fun consume(f: () -> Unit): Boolean {
         f()
         return true
     }
@@ -187,10 +185,10 @@ class WelcomeActivity : AppCompatActivity() {
     }
 
     private fun toggleNavigationMenu() {
-        if (navigationDrawerMenuState == MenuState.APP) {
-            navigationDrawerMenuState = MenuState.ACCOUNT_SWITCHER
+        navigationDrawerMenuState = if (navigationDrawerMenuState == MenuState.APP) {
+            MenuState.ACCOUNT_SWITCHER
         } else {
-            navigationDrawerMenuState = MenuState.APP
+            MenuState.APP
         }
     }
 }

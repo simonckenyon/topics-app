@@ -11,6 +11,7 @@ import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.MenuItem
 import com.google.firebase.database.*
 import ie.koala.topics.R
+import ie.koala.topics.app.Constants.FIREBASE_TOPICS
 import ie.koala.topics.app.adapter.OnRecyclerItemClickListener
 import ie.koala.topics.app.adapter.ItemTouchHelperCallback
 import kotlinx.android.synthetic.main.activity_topic_list.*
@@ -48,7 +49,7 @@ class TopicListActivity : AppCompatActivity(), OnRecyclerItemClickListener, Topi
         log.debug("onCreate:")
 
         database = FirebaseDatabase.getInstance()
-        topicsDatabaseReference = database.getReference("topics")
+        topicsDatabaseReference = database.getReference(FIREBASE_TOPICS)
 
         firebaseListenerInit()
 

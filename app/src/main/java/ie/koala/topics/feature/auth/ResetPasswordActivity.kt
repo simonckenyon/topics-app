@@ -27,20 +27,20 @@ class ResetPasswordActivity : AppCompatActivity() {
             val email = input_email.text.toString().trim()
 
             if (TextUtils.isEmpty(email)) {
-                snackbar(coordinator_layout_reset_password, "Enter your email address")
+                snackbar(coordinator_layout_reset_password, getString(R.string.message_email_is_empty))
             } else {
                 progress_bar.visibility = View.VISIBLE
 
                 auth!!.sendPasswordResetEmail(email).addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         progress_bar.visibility = View.INVISIBLE
-                        longSnackbar(coordinator_layout_reset_password, "Check your email to complete the password reset", "Dismiss") { _ ->
+                        longSnackbar(coordinator_layout_reset_password, getString(R.string.message_check_email_for_password_reset), getString(R.string.button_dismiss)) { _ ->
                             finish()
                         }
                         finish()
                     } else {
                         progress_bar.visibility = View.INVISIBLE
-                        longSnackbar(coordinator_layout_reset_password, "The reset password email could not be sent", "Dismiss") { _ ->
+                        longSnackbar(coordinator_layout_reset_password, getString(R.string.message_could_not_send_email_for_password_reset), getString(R.string.button_dismiss)) { _ ->
                             finish()
                         }
                     }
