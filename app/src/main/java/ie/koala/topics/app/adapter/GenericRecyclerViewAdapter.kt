@@ -16,9 +16,9 @@
 package ie.koala.topics.app.adapter
 
 import android.content.Context
-import android.support.annotation.LayoutRes
-import android.support.v7.util.DiffUtil
-import android.support.v7.widget.RecyclerView
+import androidx.annotation.LayoutRes
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -36,7 +36,7 @@ import java.util.*
  * @author Leonid Ustenko (Leo.Droidcoder@gmail.com)
  * @since 1.0.0
  */
-abstract class GenericRecyclerViewAdapter<T, L : BaseRecyclerListener, VH : BaseViewHolder<T, L>> : RecyclerView.Adapter<VH> {
+abstract class GenericRecyclerViewAdapter<T, L : BaseRecyclerListener, VH : BaseViewHolder<T, L>> : androidx.recyclerview.widget.RecyclerView.Adapter<VH> {
 
     private var items: MutableList<T>
     var listener: L? = null

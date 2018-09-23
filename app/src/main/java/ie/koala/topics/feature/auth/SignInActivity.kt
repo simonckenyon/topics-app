@@ -3,19 +3,21 @@ package ie.koala.topics.feature.auth
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
-import android.widget.Toast
+import android.widget.ArrayAdapter
 import com.google.firebase.auth.FirebaseAuth
 import ie.koala.topics.R
 import kotlinx.android.synthetic.main.activity_sign_in.*
+import org.jetbrains.anko.design.snackbar
 import org.slf4j.LoggerFactory
 
-class SignInActivity : AppCompatActivity() {
-
-    private var auth: FirebaseAuth? = null
+class SignInActivity : LoaderActivity() {
 
     private val log = LoggerFactory.getLogger(SignInActivity::class.java)
+
+    private var auth: FirebaseAuth? = null
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,6 +27,23 @@ class SignInActivity : AppCompatActivity() {
         toolbar.title = "Sign In"
 
         auth = FirebaseAuth.getInstance()
+
+        ContactReadPermission.get(this, coordinator_layout_sign_in)
+
+        input_email.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                log.debug("afterTextChanged s=${s}")
+                adapter?.run {
+                    notifyDataSetChanged()
+                }
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            }
+        })
 
         btn_sign_in.setOnClickListener { login() }
 
@@ -44,7 +63,7 @@ class SignInActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_SIGN_UP) {
             if (resultCode == Activity.RESULT_OK) {
                 // a successful signup logs the user in
@@ -59,19 +78,30 @@ class SignInActivity : AppCompatActivity() {
         moveTaskToBack(true)
     }
 
+    /**
+     * Create adapter to tell the AutoCompleteTextView what to show in its dropdown list.
+     *
+     * @param emailAddressCollection
+     */
+    override fun addEmailsToAutoComplete(emailAddressCollection: List<String>) {
+        log.debug("addEmailsToAutoComplete: email count=" + emailAddressCollection.size)
+        adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, emailAddressCollection)
+        input_email.setAdapter(adapter)
+    }
+
     private fun login() {
         log.debug("login:")
 
         if (!validate()) {
-            onLoginFailed()
+            btn_sign_in.isEnabled = true
+            snackbar(coordinator_layout_sign_in, getString(R.string.message_login_failed))
             return
+        } else {
+            btn_sign_in.isEnabled = false
+            val email = input_email.text.toString()
+            val password = input_password.text.toString()
+            signIn(email, password)
         }
-
-        btn_sign_in.isEnabled = false
-
-        val email = input_email.text.toString()
-        val password = input_password.text.toString()
-        signIn(email, password)
     }
 
 //    // save the user's profile into Firebase so we can list users,
@@ -83,18 +113,6 @@ class SignInActivity : AppCompatActivity() {
 //            //some more user data
 //        });
 //    }
-
-    private fun onLoginSuccess() {
-        btn_sign_in.isEnabled = true
-
-        finish()
-    }
-
-    private fun onLoginFailed() {
-        btn_sign_in.isEnabled = true
-
-        Toast.makeText(baseContext, getString(R.string.message_login_failed), Toast.LENGTH_LONG).show()
-    }
 
     private fun validate(): Boolean {
         var valid = true
@@ -123,7 +141,8 @@ class SignInActivity : AppCompatActivity() {
         log.debug("signIn: $email")
 
         if (!validate()) {
-            onLoginFailed()
+            btn_sign_in.isEnabled = true
+            snackbar(coordinator_layout_sign_in, getString(R.string.message_login_failed))
             return
         }
 
@@ -131,17 +150,15 @@ class SignInActivity : AppCompatActivity() {
 
         auth!!.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this) { task ->
+                    progress_bar.visibility = View.INVISIBLE
                     if (task.isSuccessful) {
                         log.debug( "signIn: success")
-
-                        progress_bar.visibility = View.INVISIBLE
-                        onLoginSuccess()
+                        btn_sign_in.isEnabled = true
+                        finish()
                     } else {
                         log.debug( "signIn: failed", task.exception)
-                        Toast.makeText(applicationContext, getString(R.string.message_login_failed), Toast.LENGTH_LONG).show()
-
-                        progress_bar.visibility = View.INVISIBLE
-                        onLoginFailed()
+                        btn_sign_in.isEnabled = true
+                        snackbar(coordinator_layout_sign_in, getString(R.string.message_login_failed))
                     }
                 }
     }

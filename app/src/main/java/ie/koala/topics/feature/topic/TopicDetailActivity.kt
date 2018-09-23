@@ -3,8 +3,8 @@ package ie.koala.topics.feature.topic
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.app.NavUtils
-import android.support.v7.app.AppCompatActivity
+import androidx.core.app.NavUtils
+import androidx.appcompat.app.AppCompatActivity
 import android.view.MenuItem
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
@@ -48,14 +48,16 @@ class TopicDetailActivity : AppCompatActivity() {
         super.onBackPressed()
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         log.debug("onActivityResult:")
 
         if (requestCode == REQUEST_TOPIC_EDIT) {
             if (resultCode == Activity.RESULT_OK) {
-                val t: Topic = data.getParcelableExtra(ARG_TOPIC)
-                log.debug("onActivityResult: t=$t")
-                updateContent(t)
+                if (data != null) {
+                    val t: Topic = data.getParcelableExtra(ARG_TOPIC)
+                    log.debug("onActivityResult: t=$t")
+                    updateContent(t)
+                }
             }
         }
     }

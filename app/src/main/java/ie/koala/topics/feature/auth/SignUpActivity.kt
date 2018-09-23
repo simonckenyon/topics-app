@@ -1,15 +1,8 @@
 package ie.koala.topics.feature.auth
 
-import android.Manifest
 import android.app.Activity
 import android.content.Intent
-import android.database.Cursor
 import android.os.Bundle
-import android.provider.ContactsContract
-import android.support.v4.app.LoaderManager
-import android.support.v4.content.CursorLoader
-import android.support.v4.content.Loader
-import android.support.v7.app.AppCompatActivity
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
@@ -20,18 +13,11 @@ import ie.koala.topics.R
 import kotlinx.android.synthetic.main.activity_sign_up.*
 import org.jetbrains.anko.design.snackbar
 import org.slf4j.LoggerFactory
-import java.util.*
-import android.Manifest.permission
-import android.Manifest.permission.WRITE_CALENDAR
-import android.content.pm.PackageManager
-import android.support.v4.app.ActivityCompat
-import android.support.v4.content.ContextCompat
 
 
-class SignUpActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor> {
+class SignUpActivity : LoaderActivity() {
 
     private var auth: FirebaseAuth? = null
-    private var adapter: ArrayAdapter<String>? =  null
 
     private val log = LoggerFactory.getLogger(SignUpActivity::class.java)
 
@@ -43,6 +29,8 @@ class SignUpActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor
         toolbar.title = "Sign Up"
 
         auth = FirebaseAuth.getInstance()
+
+        ContactReadPermission.get(this, coordinator_layout_sign_up)
 
         input_email.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
@@ -73,62 +61,18 @@ class SignUpActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor
     }
 
     /**
-     * Dispatch onResume() to fragments.  Note that for better inter-operation
-     * with older versions of the platform, at the point of this call the
-     * fragments attached to the activity are *not* resumed.  This means
-     * that in some cases the previous state may still be saved, not allowing
-     * fragment transactions that modify the state.  To correctly interact
-     * with fragments in their proper state, you should instead override
-     * [.onResumeFragments].
+     * Create adapter to tell the AutoCompleteTextView what to show in its dropdown list.
+     *
+     * @param emailAddressCollection
      */
-    override fun onResume() {
-        log.debug("onResume")
-        super.onResume()
-        val permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS)
-        if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
-            // User may have declined earlier, ask Android if we should show him a reason
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_CONTACTS)) {
-                // show an explanation to the user
-                // Good practise: don't block thread after the user sees the explanation, try again to request the permission.
-            } else {
-                // request the permission.
-                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is a integer constant
-                ActivityCompat.requestPermissions(this, arrayOf<String>(Manifest.permission.READ_CONTACTS), MY_PERMISSIONS_REQUEST_READ_CONTACTS)
-                // The callback method gets the result of the request.
-            }
-        } else {
-            // got permission use it
-            startLoader()
-        }
+    override fun addEmailsToAutoComplete(emailAddressCollection: List<String>) {
+        log.debug("addEmailsToAutoComplete: email count=" + emailAddressCollection.size)
+
+        adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, emailAddressCollection)
+
+        input_email.setAdapter(adapter)
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int,
-                                            permissions: Array<String>, grantResults: IntArray) {
-        when (requestCode) {
-            MY_PERMISSIONS_REQUEST_READ_CONTACTS -> {
-                // If request is cancelled, the result arrays are empty.
-                if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-                    // permission was granted, yay! Do the
-                    // contacts-related task you need to do.
-                    startLoader()
-                } else {
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
-                }
-                return
-            }
-
-            // Add other 'when' lines to check for other
-            // permissions this app might request.
-            else -> {
-                // Ignore all other requests.
-            }
-        }
-    }
-
-    private fun startLoader() {
-        getSupportLoaderManager().initLoader(LOADER_ID, null, this);
-    }
     /**
      * Finish the registration screen and return to the Login activity
      */
@@ -213,72 +157,4 @@ class SignUpActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor
             true
         }
     }
-
-    companion object {
-        private const val LOADER_ID = 1
-
-        private const val MY_PERMISSIONS_REQUEST_READ_CONTACTS = 100
-    }
-
-    private interface ProfileQuery {
-        companion object {
-            val PROJECTION = arrayOf(ContactsContract.CommonDataKinds.Email.ADDRESS, ContactsContract.CommonDataKinds.Email.IS_PRIMARY)
-
-            const val ADDRESS = 0
-        }
-    }
-
-    /**
-     * see https://stackoverflow.com/a/42001556
-     *
-     * @param i
-     * @param bundle
-     * @return
-     */
-    override fun onCreateLoader(i: Int, bundle: Bundle?): Loader<Cursor> {
-        log.debug("onCreateLoader")
-
-        return CursorLoader(this,
-                // Retrieve data rows for the device user's 'profile' contact.
-                ContactsContract.Data.CONTENT_URI, ProfileQuery.PROJECTION,
-
-                // Select only email addresses.
-                ContactsContract.Contacts.Data.MIMETYPE + " = ?", arrayOf(ContactsContract.CommonDataKinds.Email
-                .CONTENT_ITEM_TYPE),
-
-                // Show primary email addresses first. Note that there won't be
-                // a primary email address if the user hasn't specified one.
-                ContactsContract.Contacts.Data.IS_PRIMARY + " DESC")
-    }
-
-    override fun onLoadFinished(loader: Loader<Cursor>, cursor: Cursor) {
-        log.debug("onLoadFinished")
-
-        val emails = ArrayList<String>()
-        cursor.moveToFirst()
-        while (!cursor.isAfterLast) {
-            emails.add(cursor.getString(ProfileQuery.ADDRESS))
-            cursor.moveToNext()
-        }
-
-        addEmailsToAutoComplete(emails)
-    }
-
-    override fun onLoaderReset(loader: Loader<Cursor>) {
-        log.debug("onLoaderReset")
-    }
-
-    /**
-     * Create adapter to tell the AutoCompleteTextView what to show in its dropdown list.
-     *
-     * @param emailAddressCollection
-     */
-    private fun addEmailsToAutoComplete(emailAddressCollection: List<String>) {
-        log.debug("addEmailsToAutoComplete: email count=" + emailAddressCollection.size)
-
-        adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, emailAddressCollection)
-
-        input_email.setAdapter(adapter)
-    }
-
 }

@@ -24,9 +24,8 @@ import ie.koala.topics.app.adapter.BaseViewHolder
 import ie.koala.topics.app.adapter.OnRecyclerItemClickListener
 import org.slf4j.LoggerFactory
 import android.view.MotionEvent
-import android.support.v4.view.MotionEventCompat
+import androidx.core.view.MotionEventCompat
 import android.widget.ImageView
-import ie.koala.topics.R.id.handle
 
 
 /**

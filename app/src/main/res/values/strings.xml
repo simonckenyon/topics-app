@@ -49,4 +49,11 @@
     <string name="message_password_length">Password must be between 4 and 10 alphanumeric characters</string>
     <string name="title_add_topic">Add Topic</string>
     <string name="title_topic">Title</string>
+
+    <string name="message_contact_read_permission_granted">The app can now read your contact list</string>
+    <string name="message_contact_read_permission_denied">The app can now read your contact list</string>
+    <string name="title_contact_read_permission">Read contact list</string>
+    <string name="message_contact_read_permission_requested">The app would like to be able to read your contact list in order to pre-fill the email address</string>
+    <string name="button_contact_read_permission_requested_again">Request again</string>
+
 </resources>

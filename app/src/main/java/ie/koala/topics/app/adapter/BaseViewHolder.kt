@@ -15,8 +15,8 @@
  */
 package ie.koala.topics.app.adapter
 
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.helper.ItemTouchHelper
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.ItemTouchHelper
 import android.view.View
 
 /**
@@ -28,7 +28,7 @@ import android.view.View
  * @author Leonid Ustenko (Leo.Droidcoder@gmail.com)
  * @since 1.0.0
 </L></T> */
-abstract class BaseViewHolder<T, L : BaseRecyclerListener> : RecyclerView.ViewHolder {
+abstract class BaseViewHolder<T, L : BaseRecyclerListener> : androidx.recyclerview.widget.RecyclerView.ViewHolder {
 
     lateinit var listener: L
 

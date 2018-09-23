@@ -1,6 +1,6 @@
 package ie.koala.topics.app.adapter
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 
 interface OnRecyclerItemClickListener : BaseRecyclerListener {
 
@@ -16,5 +16,5 @@ interface OnRecyclerItemClickListener : BaseRecyclerListener {
      *
      * @param viewHolder The holder of the view to drag.
      */
-    fun onStartDrag(viewHolder: RecyclerView.ViewHolder)
+    fun onStartDrag(viewHolder: androidx.recyclerview.widget.RecyclerView.ViewHolder)
 }

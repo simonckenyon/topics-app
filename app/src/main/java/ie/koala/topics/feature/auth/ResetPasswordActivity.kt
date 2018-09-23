@@ -1,16 +1,19 @@
 package ie.koala.topics.feature.auth
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
 import android.view.View
+import android.widget.ArrayAdapter
 import com.google.firebase.auth.FirebaseAuth
 import ie.koala.topics.R
 import kotlinx.android.synthetic.main.activity_reset_password.*
 import org.jetbrains.anko.design.longSnackbar
 import org.jetbrains.anko.design.snackbar
+import org.slf4j.LoggerFactory
 
-class ResetPasswordActivity : AppCompatActivity() {
+class ResetPasswordActivity : LoaderActivity() {
+
+    private val log = LoggerFactory.getLogger(SignInActivity::class.java)
 
     private var auth: FirebaseAuth? = null
 
@@ -22,6 +25,8 @@ class ResetPasswordActivity : AppCompatActivity() {
         toolbar.title = "Reset Password"
 
         auth = FirebaseAuth.getInstance()
+
+        ContactReadPermission.get(this, coordinator_layout_reset_password)
 
         btn_reset_password.setOnClickListener { _ ->
             val email = input_email.text.toString().trim()
@@ -49,4 +54,17 @@ class ResetPasswordActivity : AppCompatActivity() {
         }
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
+
+
+    /**
+     * Create adapter to tell the AutoCompleteTextView what to show in its dropdown list.
+     *
+     * @param emailAddressCollection
+     */
+    override fun addEmailsToAutoComplete(emailAddressCollection: List<String>) {
+        log.debug("addEmailsToAutoComplete: email count=" + emailAddressCollection.size)
+        adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, emailAddressCollection)
+        input_email.setAdapter(adapter)
+    }
+
 }

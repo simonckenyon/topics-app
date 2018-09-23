@@ -2,12 +2,12 @@ package ie.koala.topics.feature.topic
 
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.app.NavUtils
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.DividerItemDecoration
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.helper.ItemTouchHelper
+import androidx.core.app.NavUtils
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.ItemTouchHelper
 import android.view.MenuItem
 import com.google.firebase.database.*
 import ie.koala.topics.R
@@ -168,7 +168,7 @@ class TopicListActivity : AppCompatActivity(), OnRecyclerItemClickListener, Topi
         }
     }
 
-    private fun setupRecyclerView(recyclerView: RecyclerView) {
+    private fun setupRecyclerView(recyclerView: androidx.recyclerview.widget.RecyclerView) {
         log.debug("setupRecyclerView: topicList.size=${topicList.size}")
         topicList.forEach { topic ->
             log.debug("setupRecyclerView: topic=${topic.title}")
@@ -176,10 +176,10 @@ class TopicListActivity : AppCompatActivity(), OnRecyclerItemClickListener, Topi
 
         adapter = TopicListAdapter(this, this)
         adapter.topicListener = this
-        recyclerView.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
+        recyclerView.addItemDecoration(androidx.recyclerview.widget.DividerItemDecoration(this, androidx.recyclerview.widget.DividerItemDecoration.VERTICAL))
         recyclerView.setHasFixedSize(true)
         recyclerView.adapter = adapter
-        recyclerView.layoutManager = LinearLayoutManager(this)
+        recyclerView.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
 
         adapter.setItems(topicList)
         recyclerView.adapter = adapter
@@ -194,7 +194,7 @@ class TopicListActivity : AppCompatActivity(), OnRecyclerItemClickListener, Topi
      *
      * @param viewHolder The holder of the view to drag.
      */
-    override fun onStartDrag(viewHolder: RecyclerView.ViewHolder) {
+    override fun onStartDrag(viewHolder: androidx.recyclerview.widget.RecyclerView.ViewHolder) {
         itemTouchHelper.startDrag(viewHolder)
     }
 
