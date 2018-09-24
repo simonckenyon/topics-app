@@ -9,22 +9,21 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import ie.koala.topics.R
 import ie.koala.topics.app.Constants.FIREBASE_TOPICS
-import ie.koala.topics.feature.topic.Topic.Factory.ARG_TOPIC
+import ie.koala.topics.feature.topic.Topic.Factory.ARG_TOPIC_COUNT
 import kotlinx.android.synthetic.main.activity_topic_edit.*
 import org.slf4j.LoggerFactory
 
-class TopicEditActivity : AppCompatActivity() {
+class TopicAddActivity : AppCompatActivity() {
 
     private lateinit var database: FirebaseDatabase
     private lateinit var topicsDatabaseReference: DatabaseReference
-    private lateinit var topic: Topic
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_topic_edit)
+        setContentView(R.layout.activity_topic_add)
 
         setSupportActionBar(toolbar)
-        toolbar.title = getString(R.string.title_topic_edit)
+        toolbar.title = getString(R.string.title_topic_add)
 
         // Show the Up button in the action bar.
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -32,13 +31,11 @@ class TopicEditActivity : AppCompatActivity() {
         database = FirebaseDatabase.getInstance()
         topicsDatabaseReference = database.getReference(FIREBASE_TOPICS)
 
-        topic = intent.getParcelableExtra(ARG_TOPIC)
-        log.debug("onCreate: topic=$topic")
-        input_title.setText(topic.title)
-        input_content.setText(topic.content)
+        val topicCount = intent.getIntExtra(ARG_TOPIC_COUNT, 0)
+        log.debug("onCreate: topicCount=$topicCount")
         btn_save.setOnClickListener {
-            topicUpdated()
-            returnToDetailActivity()
+            topicAdded(topicCount)
+            finish()
         }
     }
 
@@ -46,30 +43,27 @@ class TopicEditActivity : AppCompatActivity() {
         log.debug("onOptionsItemSelected:")
         return when (item.itemId) {
             android.R.id.home -> {
-                returnToDetailActivity()
+                finish()
                 true
             }
             else -> super.onOptionsItemSelected(item)
         }
     }
 
-    private fun topicUpdated() {
-        topic.title = input_title.text.toString()
-        topic.content = input_content.text.toString()
-        topicsDatabaseReference.child(topic.id).child("title").setValue(topic.title)
-        topicsDatabaseReference.child(topic.id).child("content").setValue(topic.content)
-    }
+    private fun topicAdded(topicCount: Int) {
+        val newTopic = topicsDatabaseReference.push()
+        val id = newTopic.key
+        id?.let { nonNullId ->
+            val index = topicCount + 1
+            val title = input_title.text.toString()
+            val content = input_content.text.toString()
+            val topic = Topic(nonNullId, index, title, content)
 
-    private fun returnToDetailActivity() {
-        val resultCode: Int = Activity.RESULT_OK
-        val resultIntent = Intent()
-        resultIntent.putExtra(ARG_TOPIC, topic)
-        setResult(resultCode, resultIntent)
-        log.debug("topicUpdated: about to finish()")
-        finish()
+            newTopic.setValue(topic)
+        }
     }
 
     companion object {
-        private val log = LoggerFactory.getLogger(TopicEditActivity::class.java)
+        private val log = LoggerFactory.getLogger(TopicDetailActivity::class.java)
     }
 }

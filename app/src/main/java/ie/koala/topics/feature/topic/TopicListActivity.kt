@@ -50,27 +50,33 @@ class TopicListActivity : AppCompatActivity(), OnRecyclerItemClickListener, Topi
         database = FirebaseDatabase.getInstance()
         topicsDatabaseReference = database.getReference(FIREBASE_TOPICS)
 
-        firebaseListenerInit()
 
         fab.setOnClickListener {
-            addNewTopicDialog()
+            //addNewTopicDialog()
+            addNewTopic()
         }
 
         setupRecyclerView(topic_list)
     }
 
-    override fun onStop() {
-        super.onStop()
+    override fun onResume() {
+        super.onResume()
+        firebaseListenerInit()
+    }
+
+    override fun onPause() {
+        super.onPause()
 
         topicsDatabaseReference.removeEventListener(topicListener)
 
         topicList.forEach { topic ->
-            log.debug("onStop: topic=${topic.title}")
+            log.debug("onPause: topic=${topic.title}")
         }
     }
 
     private fun firebaseListenerInit() {
         log.debug("firebaseListenerInit:")
+        topicList.clear()
         val childEventListener: ChildEventListener = object : ChildEventListener {
 
             override fun onChildAdded(dataSnapshot: DataSnapshot, previousChildName: String?) {
@@ -230,6 +236,14 @@ class TopicListActivity : AppCompatActivity(), OnRecyclerItemClickListener, Topi
                 topicsDatabaseReference.child(toChildId).child("displayIndex").setValue(i)
             }
         }
+    }
+
+    fun addNewTopic() {
+        log.debug("addNewTopic")
+        val intent = Intent(this, TopicAddActivity::class.java).apply {
+            putExtra(Topic.ARG_TOPIC_COUNT, topicList.size)
+        }
+        startActivity(intent)
     }
 
     companion object {

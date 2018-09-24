@@ -23,5 +23,6 @@ data class Topic(var id: String = "", var displayIndex: Int = -1, var title: Str
 
     companion object Factory {
         const val ARG_TOPIC: String = "ARG_TOPIC"
+        const val ARG_TOPIC_COUNT: String = "ARG_TOPIC_COUNT"
     }
 }

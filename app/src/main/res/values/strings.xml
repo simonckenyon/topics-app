@@ -63,5 +63,7 @@
     <string name="title_topic_add">Add Topic</string>
     <string name="message_topic_load_fail">Failed to load topic</string>
     <string name="message_topic_added">Topic "%1$s" added</string>
+    <string name="title_topic_edit">Edit Topic</string>
+    <string name="title_activity_topic_add">Add Topic</string>
 
 </resources>
