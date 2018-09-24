@@ -4,11 +4,11 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
 import android.widget.ArrayAdapter
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import ie.koala.topics.R
+import ie.koala.topics.app.snackbar
 import kotlinx.android.synthetic.main.activity_reset_password.*
-import org.jetbrains.anko.design.longSnackbar
-import org.jetbrains.anko.design.snackbar
 import org.slf4j.LoggerFactory
 
 class ResetPasswordActivity : LoaderActivity() {
@@ -32,20 +32,23 @@ class ResetPasswordActivity : LoaderActivity() {
             val email = input_email.text.toString().trim()
 
             if (TextUtils.isEmpty(email)) {
-                snackbar(coordinator_layout_reset_password, getString(R.string.message_email_is_empty))
+                coordinator_layout_reset_password.snackbar(R.string.message_email_is_empty)
             } else {
                 progress_bar.visibility = View.VISIBLE
 
                 auth!!.sendPasswordResetEmail(email).addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         progress_bar.visibility = View.INVISIBLE
-                        longSnackbar(coordinator_layout_reset_password, getString(R.string.message_check_email_for_password_reset), getString(R.string.button_dismiss)) { _ ->
+                        log.debug("onCreate: reset isSuccessful")
+                        coordinator_layout_reset_password.snackbar(R.string.message_check_email_for_password_reset, duration = Snackbar.LENGTH_INDEFINITE, actionText = R.string.button_dismiss) { _ ->
+                            log.debug("onCreate: snackbar dismiss")
                             finish()
                         }
-                        finish()
                     } else {
                         progress_bar.visibility = View.INVISIBLE
-                        longSnackbar(coordinator_layout_reset_password, getString(R.string.message_could_not_send_email_for_password_reset), getString(R.string.button_dismiss)) { _ ->
+                        log.debug("onCreate: reset !isSuccessful")
+                        coordinator_layout_reset_password.snackbar(R.string.message_could_not_send_email_for_password_reset, duration = Snackbar.LENGTH_INDEFINITE, actionText = R.string.button_dismiss) { _ ->
+                            log.debug("onCreate: snackbar dismiss")
                             finish()
                         }
                     }

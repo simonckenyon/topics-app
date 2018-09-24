@@ -2,23 +2,22 @@ package ie.koala.topics.feature.topic
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.core.app.NavUtils
-import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.ItemTouchHelper
 import android.view.MenuItem
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.NavUtils
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.RecyclerView
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.customview.customView
+import com.afollestad.materialdialogs.customview.getCustomView
+import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.database.*
 import ie.koala.topics.R
 import ie.koala.topics.app.Constants.FIREBASE_TOPICS
-import ie.koala.topics.app.adapter.OnRecyclerItemClickListener
 import ie.koala.topics.app.adapter.ItemTouchHelperCallback
+import ie.koala.topics.app.adapter.OnRecyclerItemClickListener
+import ie.koala.topics.app.snackbar
 import kotlinx.android.synthetic.main.activity_topic_list.*
-import org.jetbrains.anko.AnkoContext
-import org.jetbrains.anko.contentView
-import org.jetbrains.anko.ctx
-import org.jetbrains.anko.design.snackbar
 import org.slf4j.LoggerFactory
 import java.util.*
 
@@ -54,7 +53,7 @@ class TopicListActivity : AppCompatActivity(), OnRecyclerItemClickListener, Topi
         firebaseListenerInit()
 
         fab.setOnClickListener {
-            addNewTopicDialog(topicsDatabaseReference)
+            addNewTopicDialog()
         }
 
         setupRecyclerView(topic_list)
@@ -80,7 +79,6 @@ class TopicListActivity : AppCompatActivity(), OnRecyclerItemClickListener, Topi
                 topicList.add(topic)
                 topicList.sortWith(Comparator { t1, t2 -> t1.compareToByDisplayIndex(t2) })
                 adapter.setItems(topicList)
-                //snackbar(coordinator_layout_topic_list,"Topic \"${topic.title}\" added")
             }
 
             override fun onChildChanged(dataSnapshot: DataSnapshot, previousChildName: String?) {
@@ -90,7 +88,6 @@ class TopicListActivity : AppCompatActivity(), OnRecyclerItemClickListener, Topi
                 topicList.add(topic)
                 topicList.sortWith(Comparator { t1, t2 -> t1.compareToByDisplayIndex(t2) })
                 adapter.setItems(topicList)
-                //snackbar(coordinator_layout_topic_list,"Topic \"${topic.title}\" changed")
             }
 
             override fun onChildRemoved(dataSnapshot: DataSnapshot) {
@@ -99,7 +96,6 @@ class TopicListActivity : AppCompatActivity(), OnRecyclerItemClickListener, Topi
                 topicList.remove(topic!!)
                 topicList.sortWith(Comparator { t1, t2 -> t1.compareToByDisplayIndex(t2) })
                 adapter.setItems(topicList)
-                //snackbar(coordinator_layout_topic_list,"Topic \"${topic.title}\" removed")
             }
 
             override fun onChildMoved(dataSnapshot: DataSnapshot, previousChildName: String?) {
@@ -109,12 +105,11 @@ class TopicListActivity : AppCompatActivity(), OnRecyclerItemClickListener, Topi
                 topicList.sortWith(Comparator { t1, t2 -> t1.compareToByDisplayIndex(t2) })
                 topicList.add(topic)
                 adapter.setItems(topicList)
-                //snackbar(coordinator_layout_topic_list, "Topic \"${topic.title}\" moved")
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
                 log.error("postTopics:onCancelled ", databaseError.toException())
-                snackbar(coordinator_layout_topic_list, "Failed to load topic")
+                coordinator_layout_topic_list.snackbar(R.string.message_topic_load_fail)
             }
         }
 
@@ -140,32 +135,32 @@ class TopicListActivity : AppCompatActivity(), OnRecyclerItemClickListener, Topi
         }
     }
 
-    private fun addNewTopicDialog(databaseReference: DatabaseReference) {
-        val addNewTopicDialogUi by lazy {
-            contentView?.let {
-                AddTopicDialog(AnkoContext.create(ctx, it))
-            }
-        }
+    fun addNewTopicDialog() {
+        MaterialDialog(this)
+                .customView(R.layout.dialog_topic_add, scrollable = true)
+                .title(R.string.title_add_topic)
+                .positiveButton(R.string.button_ok) { dialog ->
+                    val customView = dialog.getCustomView()!!
+                    val inputTitle: TextInputEditText = customView.findViewById(R.id.input_title)
+                    val inputContent: TextInputEditText = customView.findViewById(R.id.input_content)
 
-        addNewTopicDialogUi?.okButton?.setOnClickListener {
-            //We first make a push so that a new item is made with a unique ID
-            val newTopic = databaseReference.push()
-            val id = newTopic.key
-            id?.let { nonNullId ->
-                val index = topicList.size
-                val title = addNewTopicDialogUi.topicTitleText.text.toString()
-                val content = addNewTopicDialogUi.topicContentText.text.toString()
-                val topic = Topic(nonNullId, index, title, content)
+                    val newTopic = topicsDatabaseReference.push()
+                    val id = newTopic.key
+                    id?.let { nonNullId ->
+                        val index = topicList.size
+                        val title = inputTitle.text.toString()
+                        val content = inputContent.text.toString()
+                        val topic = Topic(nonNullId, index, title, content)
 
-                newTopic.setValue(topic)
-                addNewTopicDialogUi.dialog.dismiss()
-                snackbar(coordinator_layout_topic_list, "Topic \"${topic.title}\" added")
-            }
-        }
+                        newTopic.setValue(topic)
+                        coordinator_layout_topic_list.snackbar(getString(R.string.message_topic_added, topic.title))
+                    }
+                }
+                .negativeButton(R.string.button_cancel) { dialog ->
+                    // Do something
+                }
+                .show()
 
-        addNewTopicDialogUi?.cancelButton?.setOnClickListener {
-            addNewTopicDialogUi.dialog.dismiss()
-        }
     }
 
     private fun setupRecyclerView(recyclerView: androidx.recyclerview.widget.RecyclerView) {
@@ -235,9 +230,6 @@ class TopicListActivity : AppCompatActivity(), OnRecyclerItemClickListener, Topi
                 topicsDatabaseReference.child(toChildId).child("displayIndex").setValue(i)
             }
         }
-
-
-
     }
 
     companion object {

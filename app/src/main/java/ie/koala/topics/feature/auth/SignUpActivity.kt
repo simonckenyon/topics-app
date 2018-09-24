@@ -10,8 +10,8 @@ import android.view.inputmethod.EditorInfo
 import android.widget.ArrayAdapter
 import com.google.firebase.auth.FirebaseAuth
 import ie.koala.topics.R
+import ie.koala.topics.app.snackbar
 import kotlinx.android.synthetic.main.activity_sign_up.*
-import org.jetbrains.anko.design.snackbar
 import org.slf4j.LoggerFactory
 
 
@@ -151,7 +151,7 @@ class SignUpActivity : LoaderActivity() {
                         } else {
                             val message = task.exception?.message ?: "Authentication failed"
                             log.debug("createAccount: failed (${message})")
-                            snackbar(coordinator_layout_sign_up, message)
+                            coordinator_layout_sign_up.snackbar(message)
                         }
                     }
             true

@@ -55,5 +55,13 @@
     <string name="title_contact_read_permission">Read contact list</string>
     <string name="message_contact_read_permission_requested">The app would like to be able to read your contact list in order to pre-fill the email address</string>
     <string name="button_contact_read_permission_requested_again">Request again</string>
+    <string name="button_ok">OK</string>
+    <string name="button_cancel">Cancel</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_topic_add">Add Topic</string>
+    <string name="message_topic_load_fail">Failed to load topic</string>
+    <string name="message_topic_added">Topic "%1$s" added</string>
 
 </resources>

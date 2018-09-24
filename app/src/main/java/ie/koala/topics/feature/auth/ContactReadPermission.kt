@@ -8,9 +8,9 @@ import android.view.View
 import com.fondesa.kpermissions.extension.listeners
 import com.fondesa.kpermissions.extension.permissionsBuilder
 import ie.koala.topics.R
+import ie.koala.topics.app.snackbar
 import org.jetbrains.anko.alert
 
-import org.jetbrains.anko.design.snackbar
 import org.slf4j.LoggerFactory
 
 class ContactReadPermission {
@@ -25,7 +25,7 @@ class ContactReadPermission {
                     // Notified when the permissions are accepted.
                     log.debug("onPermissionsAccepted")
 
-                    snackbar(coordinatorLayout, activity.getString(R.string.message_contact_read_permission_granted))
+                    coordinatorLayout.snackbar(R.string.message_contact_read_permission_granted)
 
                     // we have permission to use the contacts to fill the email addresss dropdown
                     // start the loader
@@ -35,7 +35,7 @@ class ContactReadPermission {
                     // Notified when the permissions are denied.
                     log.debug("onPermissionsDenied")
 
-                    snackbar(coordinatorLayout, activity.getString(R.string.message_contact_read_permission_denied))
+                    coordinatorLayout.snackbar(R.string.message_contact_read_permission_denied)
                 }
                 onPermanentlyDenied { permissions ->
                     log.debug("onPermissionsPermanentlyDenied")

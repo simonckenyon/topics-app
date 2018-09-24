@@ -9,8 +9,8 @@ import android.view.View
 import android.widget.ArrayAdapter
 import com.google.firebase.auth.FirebaseAuth
 import ie.koala.topics.R
+import ie.koala.topics.app.snackbar
 import kotlinx.android.synthetic.main.activity_sign_in.*
-import org.jetbrains.anko.design.snackbar
 import org.slf4j.LoggerFactory
 
 class SignInActivity : LoaderActivity() {
@@ -94,7 +94,7 @@ class SignInActivity : LoaderActivity() {
 
         if (!validate()) {
             btn_sign_in.isEnabled = true
-            snackbar(coordinator_layout_sign_in, getString(R.string.message_login_failed))
+            coordinator_layout_sign_in.snackbar(R.string.message_login_failed)
             return
         } else {
             btn_sign_in.isEnabled = false
@@ -142,7 +142,7 @@ class SignInActivity : LoaderActivity() {
 
         if (!validate()) {
             btn_sign_in.isEnabled = true
-            snackbar(coordinator_layout_sign_in, getString(R.string.message_login_failed))
+            coordinator_layout_sign_in.snackbar(R.string.message_login_failed)
             return
         }
 
@@ -158,7 +158,7 @@ class SignInActivity : LoaderActivity() {
                     } else {
                         log.debug( "signIn: failed", task.exception)
                         btn_sign_in.isEnabled = true
-                        snackbar(coordinator_layout_sign_in, getString(R.string.message_login_failed))
+                        coordinator_layout_sign_in.snackbar(R.string.message_login_failed)
                     }
                 }
     }
