@@ -8,7 +8,7 @@ import android.view.View
 import com.fondesa.kpermissions.extension.listeners
 import com.fondesa.kpermissions.extension.permissionsBuilder
 import ie.koala.topics.R
-import ie.koala.topics.app.snackbar
+import ie.koala.topics.framework.ui.snackbar
 import org.jetbrains.anko.alert
 
 import org.slf4j.LoggerFactory
@@ -21,7 +21,7 @@ class ContactReadPermission {
         fun get(activity: LoaderActivity, coordinatorLayout: View) {
             val request = activity.permissionsBuilder(Manifest.permission.READ_CONTACTS).build()
             request.listeners {
-                onAccepted { permissions ->
+                onAccepted { _ ->
                     // Notified when the permissions are accepted.
                     log.debug("onPermissionsAccepted")
 
@@ -31,13 +31,13 @@ class ContactReadPermission {
                     // start the loader
                     activity.getSupportLoaderManager().initLoader(LoaderActivity.LOADER_ID, null, activity)
                 }
-                onDenied { permissions ->
+                onDenied { _ ->
                     // Notified when the permissions are denied.
                     log.debug("onPermissionsDenied")
 
                     coordinatorLayout.snackbar(R.string.message_contact_read_permission_denied)
                 }
-                onPermanentlyDenied { permissions ->
+                onPermanentlyDenied { _ ->
                     log.debug("onPermissionsPermanentlyDenied")
 
                     activity.alert(activity.getString(R.string.message_contact_read_permission_requested)) {
@@ -51,7 +51,7 @@ class ContactReadPermission {
                     }.show()
                 }
 
-                onShouldShowRationale { permissions, nonce ->
+                onShouldShowRationale { _, nonce ->
                     log.debug("onPermissionsShouldShowRationale")
 
                     activity.alert(activity.getString(R.string.message_contact_read_permission_requested)) {

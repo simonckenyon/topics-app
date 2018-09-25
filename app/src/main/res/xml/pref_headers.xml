@@ -3,17 +3,17 @@
     <!-- These settings headers are only used on tablets. -->
 
     <header
-        android:fragment="ie.koala.topics.feature.settings.SettingsActivity$GeneralPreferenceFragment"
+        android:fragment="ie.koala.topics.framework.preferences.PreferencesActivity$GeneralPreferenceFragment"
         android:icon="@drawable/ic_info_black_24dp"
         android:title="@string/pref_header_general" />
 
     <header
-        android:fragment="ie.koala.topics.feature.settings.SettingsActivity$NotificationPreferenceFragment"
+        android:fragment="ie.koala.topics.framework.preferences.PreferencesActivity$NotificationPreferenceFragment"
         android:icon="@drawable/ic_notifications_black_24dp"
         android:title="@string/pref_header_notifications" />
 
     <header
-        android:fragment="ie.koala.topics.feature.settings.SettingsActivity$DataSyncPreferenceFragment"
+        android:fragment="ie.koala.topics.framework.preferences.PreferencesActivity$DataSyncPreferenceFragment"
         android:icon="@drawable/ic_sync_black_24dp"
         android:title="@string/pref_header_data_sync" />
 

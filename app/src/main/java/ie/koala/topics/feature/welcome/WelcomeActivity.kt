@@ -12,12 +12,13 @@ import com.hendraanggrian.pikasso.picasso
 import com.hendraanggrian.pikasso.transformations.circle
 import fr.tkeunebr.gravatar.Gravatar
 import ie.koala.topics.R
-import ie.koala.topics.app.Constants.NAV_MODE_NORMAL
-import ie.koala.topics.app.PreferenceHelper.defaultPrefs
+import ie.koala.topics.framework.preferences.PreferenceKeys.NAV_MODE_NORMAL
+import ie.koala.topics.framework.preferences.PreferenceHelper.defaultPrefs
 import ie.koala.topics.app.TopicsApplication
 import ie.koala.topics.feature.auth.SignInActivity
 import ie.koala.topics.feature.auth.SignUpActivity
-import ie.koala.topics.feature.settings.SettingsActivity
+import ie.koala.topics.feature.user.UserActivity
+import ie.koala.topics.framework.preferences.PreferencesActivity
 import ie.koala.topics.feature.topic.TopicListActivity
 import kotlinx.android.synthetic.main.activity_welcome.*
 import kotlinx.android.synthetic.main.nav_header_main.view.*
@@ -94,7 +95,7 @@ class WelcomeActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.action_settings -> consume {
-            val intent = Intent(this, SettingsActivity::class.java)
+            val intent = Intent(this, PreferencesActivity::class.java)
             startActivity(intent)
         }
         else -> super.onOptionsItemSelected(item)
@@ -138,7 +139,7 @@ class WelcomeActivity : AppCompatActivity() {
             if (navigationDrawerMenuState == MenuState.ACCOUNT_SWITCHER) {
                 emailAddress.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_arrow_drop_up, 0)
 
-                val signOut: MenuItem = menu.add(Menu.NONE, Menu.NONE, Menu.FIRST, "Sign Out")
+                val signOut: MenuItem = menu.add(Menu.NONE, Menu.NONE, Menu.FIRST, R.string.menu_sign_out)
                 signOut.setIcon(R.drawable.ic_menu_sign_out)
                 signOut.setOnMenuItemClickListener {
                     drawer_layout.closeDrawer(GravityCompat.START)
@@ -149,11 +150,19 @@ class WelcomeActivity : AppCompatActivity() {
             } else {
                 emailAddress.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_arrow_drop_down, 0)
 
-                val topicList = menu.add(Menu.NONE, Menu.NONE, Menu.FIRST, "Topic List")
+                val topicList: MenuItem = menu.add(Menu.NONE, Menu.NONE, Menu.FIRST, R.string.menu_topics)
                 topicList.setIcon(R.drawable.ic_menu_list)
                 topicList.setOnMenuItemClickListener {
                     drawer_layout.closeDrawer(GravityCompat.START)
                     val intent = Intent(this, TopicListActivity::class.java)
+                    startActivity(intent)
+                    true
+                }
+                val user: MenuItem = menu.add(Menu.NONE, Menu.NONE, Menu.FIRST, R.string.menu_users)
+                user.setIcon(R.drawable.ic_menu_user)
+                user.setOnMenuItemClickListener {
+                    drawer_layout.closeDrawer(GravityCompat.START)
+                    val intent = Intent(this, UserActivity::class.java)
                     startActivity(intent)
                     true
                 }
@@ -164,7 +173,7 @@ class WelcomeActivity : AppCompatActivity() {
             emailAddress.text = ""
             emailAddress.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
 
-            val signIn: MenuItem = menu.add(Menu.NONE, Menu.NONE, Menu.FIRST, "Sign In")
+            val signIn: MenuItem = menu.add(Menu.NONE, Menu.NONE, Menu.FIRST, R.string.menu_sign_in)
             signIn.setIcon(R.drawable.ic_menu_sign_in)
             signIn.setOnMenuItemClickListener {
                 drawer_layout.closeDrawer(GravityCompat.START)
@@ -173,7 +182,7 @@ class WelcomeActivity : AppCompatActivity() {
                 true
             }
 
-            val signUp: MenuItem = menu.add(Menu.NONE, Menu.NONE, Menu.FIRST, "Sign Up")
+            val signUp: MenuItem = menu.add(Menu.NONE, Menu.NONE, Menu.FIRST, R.string.menu_sign_up)
             signUp.setIcon(R.drawable.ic_menu_sign_up)
             signUp.setOnMenuItemClickListener {
                 drawer_layout.closeDrawer(GravityCompat.START)

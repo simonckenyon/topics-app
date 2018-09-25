@@ -1,4 +1,4 @@
-package ie.koala.topics.web
+package ie.koala.topics.framework.web
 
 import info.bliki.wiki.model.Configuration
 import info.bliki.wiki.model.WikiModel

@@ -1,4 +1,4 @@
-package ie.koala.topics.app
+package ie.koala.topics.framework.preferences
 
 import android.content.Context
 import android.content.SharedPreferences

@@ -13,10 +13,10 @@ import com.afollestad.materialdialogs.customview.getCustomView
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.database.*
 import ie.koala.topics.R
-import ie.koala.topics.app.Constants.FIREBASE_TOPICS
-import ie.koala.topics.app.adapter.ItemTouchHelperCallback
-import ie.koala.topics.app.adapter.OnRecyclerItemClickListener
-import ie.koala.topics.app.snackbar
+import ie.koala.topics.feature.topic.TopicReference.FIREBASE_TOPICS
+import ie.koala.topics.framework.adapter.ItemTouchHelperCallback
+import ie.koala.topics.framework.adapter.OnRecyclerItemClickListener
+import ie.koala.topics.framework.ui.snackbar
 import kotlinx.android.synthetic.main.activity_topic_list.*
 import org.slf4j.LoggerFactory
 import java.util.*

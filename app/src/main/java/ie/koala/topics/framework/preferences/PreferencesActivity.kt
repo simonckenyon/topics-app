@@ -1,4 +1,4 @@
-package ie.koala.topics.feature.settings
+package ie.koala.topics.framework.preferences
 
 import android.annotation.TargetApi
 import android.content.Context
@@ -29,7 +29,7 @@ import ie.koala.topics.R
  * for design guidelines and the [Settings API Guide](http://developer.android.com/guide/topics/ui/settings.html)
  * for more information on developing a Settings UI.
  */
-class SettingsActivity : AppCompatPreferenceActivity() {
+class PreferencesActivity : AppCompatPreferenceActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -102,7 +102,7 @@ class SettingsActivity : AppCompatPreferenceActivity() {
         override fun onOptionsItemSelected(item: MenuItem): Boolean {
             val id = item.itemId
             if (id == android.R.id.home) {
-                startActivity(Intent(activity, SettingsActivity::class.java))
+                startActivity(Intent(activity, PreferencesActivity::class.java))
                 return true
             }
             return super.onOptionsItemSelected(item)
@@ -130,7 +130,7 @@ class SettingsActivity : AppCompatPreferenceActivity() {
         override fun onOptionsItemSelected(item: MenuItem): Boolean {
             val id = item.itemId
             if (id == android.R.id.home) {
-                startActivity(Intent(activity, SettingsActivity::class.java))
+                startActivity(Intent(activity, PreferencesActivity::class.java))
                 return true
             }
             return super.onOptionsItemSelected(item)
@@ -158,7 +158,7 @@ class SettingsActivity : AppCompatPreferenceActivity() {
         override fun onOptionsItemSelected(item: MenuItem): Boolean {
             val id = item.itemId
             if (id == android.R.id.home) {
-                startActivity(Intent(activity, SettingsActivity::class.java))
+                startActivity(Intent(activity, PreferencesActivity::class.java))
                 return true
             }
             return super.onOptionsItemSelected(item)

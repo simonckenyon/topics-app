@@ -1,15 +1,13 @@
 package ie.koala.topics.feature.topic
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import android.view.MenuItem
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import ie.koala.topics.R
-import ie.koala.topics.app.Constants.FIREBASE_TOPICS
 import ie.koala.topics.feature.topic.Topic.Factory.ARG_TOPIC_COUNT
+import ie.koala.topics.feature.topic.TopicReference.FIREBASE_TOPICS
 import kotlinx.android.synthetic.main.activity_topic_edit.*
 import org.slf4j.LoggerFactory
 

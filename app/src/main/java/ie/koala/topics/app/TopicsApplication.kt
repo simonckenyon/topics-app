@@ -1,8 +1,6 @@
 package ie.koala.topics.app
 
 import android.app.Application
-import android.content.Context
-import android.widget.Toast
 import com.google.firebase.database.FirebaseDatabase
 import ie.koala.topics.BuildConfig
 
@@ -11,13 +9,6 @@ open class TopicsApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         FirebaseDatabase.getInstance().setPersistenceEnabled(true)
-    }
-
-    /**
-     * See https://rongi.github.io/kotlin-blog/kotlin/2017/06/28/toast.html
-     */
-    fun Any.toast(context: Context, duration: Int = Toast.LENGTH_SHORT): Toast {
-        return Toast.makeText(context, this.toString(), duration).apply { show() }
     }
 
     companion object {

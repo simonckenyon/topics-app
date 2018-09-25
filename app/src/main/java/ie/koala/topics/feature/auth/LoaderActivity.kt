@@ -13,12 +13,12 @@ import java.util.ArrayList
 
 abstract class LoaderActivity: AppCompatActivity(), androidx.loader.app.LoaderManager.LoaderCallbacks<Cursor> {
 
-    private val log = LoggerFactory.getLogger(SignUpActivity::class.java)
 
     var adapter: ArrayAdapter<String>? = null
 
     companion object {
         const val LOADER_ID = 1
+        private val log = LoggerFactory.getLogger(SignUpActivity::class.java)
     }
 
     private interface ProfileQuery {

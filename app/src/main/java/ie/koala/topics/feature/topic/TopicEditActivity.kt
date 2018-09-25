@@ -8,7 +8,7 @@ import android.view.MenuItem
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import ie.koala.topics.R
-import ie.koala.topics.app.Constants.FIREBASE_TOPICS
+import ie.koala.topics.feature.topic.TopicReference.FIREBASE_TOPICS
 import ie.koala.topics.feature.topic.Topic.Factory.ARG_TOPIC
 import kotlinx.android.synthetic.main.activity_topic_edit.*
 import org.slf4j.LoggerFactory

@@ -7,7 +7,7 @@ import android.widget.ArrayAdapter
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import ie.koala.topics.R
-import ie.koala.topics.app.snackbar
+import ie.koala.topics.framework.ui.snackbar
 import kotlinx.android.synthetic.main.activity_reset_password.*
 import org.slf4j.LoggerFactory
 
