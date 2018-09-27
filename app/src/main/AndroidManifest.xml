@@ -20,13 +20,33 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
-            android:name=".feature.user.UserActivity"
-            android:label="@string/activity_hotstock"
+            android:name=".app.MainActivity"
+            android:label="@string/title_activity_main"
+            android:windowSoftInputMode="adjustResize"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".feature.animal.AnimalActivity"
+            android:label="@string/activity_animals"
             android:windowSoftInputMode="adjustResize"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".feature.welcome.WelcomeActivity" />
+                android:value=".app.MainActivity" />
+        </activity>
+        <activity
+            android:name=".feature.user.UserActivity"
+            android:label="@string/activity_users"
+            android:windowSoftInputMode="adjustResize"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".app.MainActivity" />
         </activity>
         <activity
             android:name=".feature.topic.TopicListActivity"
@@ -35,7 +55,7 @@
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".feature.welcome.WelcomeActivity" />
+                android:value=".app.MainActivity" />
         </activity>
         <activity
             android:name=".feature.topic.TopicDetailActivity"
@@ -48,45 +68,34 @@
                 android:value=".feature.topic.TopicListActivity" />
         </activity>
         <activity
-            android:name=".feature.welcome.WelcomeActivity"
-            android:label="@string/title_activity_main"
-            android:windowSoftInputMode="adjustResize"
-            android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity
             android:name=".feature.auth.SignInActivity"
             android:label="@string/title_activity_sign_in"
             android:windowSoftInputMode="adjustResize"
-            android:parentActivityName=".feature.welcome.WelcomeActivity"
+            android:parentActivityName=".app.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".feature.welcome.WelcomeActivity" />
+                android:value=".app.MainActivity" />
         </activity>
         <activity
             android:name=".feature.auth.SignUpActivity"
             android:label="@string/title_activity_sign_up"
             android:windowSoftInputMode="adjustResize"
-            android:parentActivityName=".feature.welcome.WelcomeActivity"
+            android:parentActivityName=".app.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".feature.welcome.WelcomeActivity" />
+                android:value=".app.MainActivity" />
         </activity>
         <activity
             android:name=".feature.auth.ResetPasswordActivity"
             android:label="@string/title_activity_reset_password"
             android:windowSoftInputMode="adjustResize"
-            android:parentActivityName=".feature.welcome.WelcomeActivity"
+            android:parentActivityName=".app.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".feature.welcome.WelcomeActivity" />
+                android:value=".app.MainActivity" />
         </activity>
         <activity
             android:name=".feature.topic.TopicEditActivity"
@@ -112,11 +121,20 @@
             android:name="ie.koala.topics.framework.preferences.PreferencesActivity"
             android:label="@string/title_activity_settings"
             android:windowSoftInputMode="adjustResize"
-            android:parentActivityName=".feature.welcome.WelcomeActivity">
+            android:parentActivityName=".app.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="ie.koala.topics.feature.welcome.WelcomeActivity" />
+                android:value="ie.koala.topics.app.MainActivity" />
         </activity>
+        <activity android:name=".feature.github.ui.GithubActivity"
+            android:label="@string/activity_search_github"
+            android:windowSoftInputMode="adjustResize"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".app.MainActivity" />
+        </activity>
+
     </application>
 
 </manifest>

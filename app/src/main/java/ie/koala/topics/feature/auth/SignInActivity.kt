@@ -74,7 +74,7 @@ class SignInActivity : LoaderActivity() {
     }
 
     override fun onBackPressed() {
-        // Disable going back to the WelcomeActivity
+        // Disable going back to the MainActivity
         moveTaskToBack(true)
     }
 

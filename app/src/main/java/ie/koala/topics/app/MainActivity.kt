@@ -1,30 +1,33 @@
-package ie.koala.topics.feature.welcome
+package ie.koala.topics.app
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.core.view.GravityCompat
-import androidx.appcompat.app.ActionBarDrawerToggle
-import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.GravityCompat
 import com.google.firebase.auth.FirebaseAuth
 import com.hendraanggrian.pikasso.picasso
 import com.hendraanggrian.pikasso.transformations.circle
 import fr.tkeunebr.gravatar.Gravatar
 import ie.koala.topics.R
-import ie.koala.topics.framework.preferences.PreferenceKeys.NAV_MODE_NORMAL
-import ie.koala.topics.framework.preferences.PreferenceHelper.defaultPrefs
-import ie.koala.topics.app.TopicsApplication
+import ie.koala.topics.feature.animal.AnimalActivity
 import ie.koala.topics.feature.auth.SignInActivity
 import ie.koala.topics.feature.auth.SignUpActivity
-import ie.koala.topics.feature.user.UserActivity
-import ie.koala.topics.framework.preferences.PreferencesActivity
+import ie.koala.topics.feature.github.ui.GithubActivity
 import ie.koala.topics.feature.topic.TopicListActivity
-import kotlinx.android.synthetic.main.activity_welcome.*
+import ie.koala.topics.feature.user.UserActivity
+import ie.koala.topics.framework.preferences.PreferenceHelper.defaultPrefs
+import ie.koala.topics.framework.preferences.PreferenceKeys.NAV_MODE_NORMAL
+import ie.koala.topics.framework.preferences.PreferencesActivity
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.nav_header_main.view.*
+import org.jetbrains.anko.startActivity
 import org.slf4j.LoggerFactory
 
-class WelcomeActivity : AppCompatActivity() {
+
+class MainActivity : AppCompatActivity() {
 
     enum class MenuState { APP, ACCOUNT_SWITCHER }
 
@@ -32,12 +35,12 @@ class WelcomeActivity : AppCompatActivity() {
 
     private var auth: FirebaseAuth? = null
 
-    private val log = LoggerFactory.getLogger(WelcomeActivity::class.java)
+    private val log = LoggerFactory.getLogger(MainActivity::class.java)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_welcome)
+        setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
         auth = FirebaseAuth.getInstance()
@@ -59,6 +62,45 @@ class WelcomeActivity : AppCompatActivity() {
         toggle.syncState()
 
         updateNavigationMenu()
+        nav_view.setNavigationItemSelectedListener { menuItem ->
+            // set item as selected to persist highlight
+            menuItem.isChecked = true
+            // close drawer when item is tapped
+            drawer_layout.closeDrawer(GravityCompat.START)
+
+            when (menuItem.itemId) {
+                R.id.nav_topics -> {
+                    startActivity<TopicListActivity>()
+                    true
+                }
+                R.id.nav_user -> {
+                    startActivity<UserActivity>()
+                    true
+                }
+                R.id.nav_animals -> {
+                    startActivity<AnimalActivity>()
+                    true
+                }
+                R.id.nav_search_github -> {
+                    startActivity<GithubActivity>()
+                    true
+                }
+                R.id.nav_sign_in -> {
+                    startActivity<SignInActivity>()
+                    true
+                }
+                R.id.nav_sign_up -> {
+                    startActivity<SignUpActivity>()
+                    true
+                }
+                R.id.menu_sign_out -> {
+                    auth!!.signOut()
+                    updateNavigationMenu()
+                    true
+                }
+                else -> false
+            }
+        }
     }
 
     override fun onBackPressed() {
@@ -123,8 +165,6 @@ class WelcomeActivity : AppCompatActivity() {
         val headerView = nav_view.getHeaderView(0)
         val emailAddress = headerView.email_address
 
-        menu.clear()
-
         if (auth != null && auth?.currentUser != null) {
             // signed in
             val user = auth!!.currentUser
@@ -137,59 +177,26 @@ class WelcomeActivity : AppCompatActivity() {
             emailAddress.text = user?.email
 
             if (navigationDrawerMenuState == MenuState.ACCOUNT_SWITCHER) {
+                log.debug("updateNavigationMenu: set sign out menu visible")
                 emailAddress.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_arrow_drop_up, 0)
-
-                val signOut: MenuItem = menu.add(Menu.NONE, Menu.NONE, Menu.FIRST, R.string.menu_sign_out)
-                signOut.setIcon(R.drawable.ic_menu_sign_out)
-                signOut.setOnMenuItemClickListener {
-                    drawer_layout.closeDrawer(GravityCompat.START)
-                    auth!!.signOut()
-                    updateNavigationMenu()
-                    true
-                }
+                menu.setGroupVisible(R.id.menu_sign_in, false)
+                menu.setGroupVisible(R.id.menu_sign_out, true)
+                menu.setGroupVisible(R.id.menu_authenticated, false)
             } else {
+                log.debug("updateNavigationMenu: set authenticated menu visible")
                 emailAddress.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_arrow_drop_down, 0)
-
-                val topicList: MenuItem = menu.add(Menu.NONE, Menu.NONE, Menu.FIRST, R.string.menu_topics)
-                topicList.setIcon(R.drawable.ic_menu_list)
-                topicList.setOnMenuItemClickListener {
-                    drawer_layout.closeDrawer(GravityCompat.START)
-                    val intent = Intent(this, TopicListActivity::class.java)
-                    startActivity(intent)
-                    true
-                }
-                val user: MenuItem = menu.add(Menu.NONE, Menu.NONE, Menu.FIRST, R.string.menu_users)
-                user.setIcon(R.drawable.ic_menu_user)
-                user.setOnMenuItemClickListener {
-                    drawer_layout.closeDrawer(GravityCompat.START)
-                    val intent = Intent(this, UserActivity::class.java)
-                    startActivity(intent)
-                    true
-                }
+                menu.setGroupVisible(R.id.menu_sign_in, false)
+                menu.setGroupVisible(R.id.menu_sign_out, false)
+                menu.setGroupVisible(R.id.menu_authenticated, true)
             }
         } else {
             // not logged in
-
+            log.debug("updateNavigationMenu: set sign in menu visible")
             emailAddress.text = ""
             emailAddress.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
-
-            val signIn: MenuItem = menu.add(Menu.NONE, Menu.NONE, Menu.FIRST, R.string.menu_sign_in)
-            signIn.setIcon(R.drawable.ic_menu_sign_in)
-            signIn.setOnMenuItemClickListener {
-                drawer_layout.closeDrawer(GravityCompat.START)
-                val intent = Intent(this, SignInActivity::class.java)
-                startActivity(intent)
-                true
-            }
-
-            val signUp: MenuItem = menu.add(Menu.NONE, Menu.NONE, Menu.FIRST, R.string.menu_sign_up)
-            signUp.setIcon(R.drawable.ic_menu_sign_up)
-            signUp.setOnMenuItemClickListener {
-                drawer_layout.closeDrawer(GravityCompat.START)
-                val intent = Intent(this, SignUpActivity::class.java)
-                startActivity(intent)
-                true
-            }
+            menu.setGroupVisible(R.id.menu_sign_in, true)
+            menu.setGroupVisible(R.id.menu_sign_out, false)
+            menu.setGroupVisible(R.id.menu_authenticated, false)
         }
     }
 

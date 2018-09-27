@@ -65,11 +65,22 @@
     <string name="message_topic_added">Topic "%1$s" added</string>
     <string name="title_topic_edit">Edit Topic</string>
     <string name="title_activity_topic_add">Add Topic</string>
-    <string name="activity_hotstock">HotStock</string>
+    <string name="activity_users">Users</string>
     <string name="menu_topics">Topics</string>
     <string name="menu_users">Users</string>
     <string name="menu_sign_in">Sign In</string>
     <string name="menu_sign_up">Sign Up</string>
     <string name="menu_sign_out">Sign Out</string>
+    <string name="menu_animals">Animals</string>
+    <string name="activity_animals">Animals</string>
+
+    <string name="loading">Loading</string>
+    <string name="language">Language: %s</string>
+    <string name="search_hint">GitHub Repository</string>
+    <string name="no_results">No results 😓</string>
+    <string name="unknown">\?</string>
+    <string name="activity_search_github">Search GitHub</string>
+    <string name="menu_search_github">Search GitHub</string>
+
 
 </resources>

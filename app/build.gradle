@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
 
 android {
@@ -69,50 +70,68 @@ androidExtensions {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion"
 
-    //implementation 'com.android.support:multidex:1.0.3'
+    //implementation "com.android.support:multidex:1.0.3"
 
-    implementation 'androidx.appcompat:appcompat:1.0.0'
-    implementation "androidx.constraintlayout:constraintlayout:2.0.0-alpha2"
-    implementation 'com.google.android.material:material:1.0.0'
-    implementation 'androidx.recyclerview:recyclerview:1.0.0'
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation "androidx.appcompat:appcompat:1.0.0"
+    implementation "androidx.constraintlayout:constraintlayout:$constraintLayoutVersion"
+    implementation "com.google.android.material:material:$materialVersion"
+    implementation "androidx.recyclerview:recyclerview:$recyclerViewVersion"
+    implementation "androidx.legacy:legacy-support-v4:1.0.0"
 
-    implementation 'android.arch.lifecycle:extensions:1.1.1'
+    // architecture components
+    implementation "android.arch.lifecycle:extensions:$archComponentsVersion"
+    implementation "android.arch.lifecycle:runtime:$archComponentsVersion"
+    implementation "android.arch.persistence.room:runtime:$roomVersion"
+    implementation "android.arch.paging:runtime:$pagingVersion"
 
-    implementation 'com.google.firebase:firebase-database:16.0.2'
-    implementation 'com.google.firebase:firebase-core:16.0.3'
-    implementation 'com.google.firebase:firebase-auth:16.0.3'
+    kapt "android.arch.lifecycle:compiler:$archComponentsVersion"
+    kapt "android.arch.persistence.room:compiler:$roomVersion"
 
-    implementation "org.jetbrains.anko:anko:$anko_version"
-    implementation "org.jetbrains.anko:anko-commons:$anko_version"
-    implementation "org.jetbrains.anko:anko-design:$anko_version"
+    implementation "com.jakewharton.rxbinding2:rxbinding-recyclerview-v7-kotlin:2.1.1"
+    implementation "com.androidhuman.rxfirebase2:firebase-database-kotlin:11.8.0.0"
+    implementation "io.reactivex.rxjava2:rxjava:2.1.14"
 
-    api "org.slf4j:slf4j-api:${slf4jVersion}"
-    api "org.slf4j:jul-to-slf4j:${slf4jVersion}"
-    api 'com.github.tony19:logback-android:1.1.1-12'
+    implementation "com.google.firebase:firebase-database:$firebaseDatabaseVersion"
+    implementation "com.google.firebase:firebase-core:$firebaseCoreVersion"
+    implementation "com.google.firebase:firebase-auth:$firebaseCoreVersion"
 
-    implementation files('libs/gravatar-android-1.0.jar')
-    implementation 'com.squareup.picasso:picasso:2.71828'
-    implementation "com.hendraanggrian.pikasso:pikasso:$pikasso_version"
+    implementation "org.jetbrains.anko:anko:$ankoVersion"
+    implementation "org.jetbrains.anko:anko-commons:$ankoVersion"
+    implementation "org.jetbrains.anko:anko-design:$ankoVersion"
 
-    implementation('info.bliki.wiki:bliki-core:3.1.0') {
-        exclude group: 'com.github.tony19', module: 'logback-android'
-        exclude group: 'ch.qos.logback', module: 'logback-classic'
-        exclude group: 'org.slf4j', module: 'slf4j-api'
+    api "org.slf4j:slf4j-api:$slf4jVersion"
+    api "org.slf4j:jul-to-slf4j:$slf4jVersion"
+    api "com.github.tony19:logback-android:$logbackAndroidVersion"
+
+    implementation files("libs/gravatar-android-1.0.jar")
+    implementation "com.squareup.picasso:picasso:$picassoVersion"
+    implementation "com.hendraanggrian.pikasso:pikasso:$pikassoVersion"
+
+    implementation("info.bliki.wiki:bliki-core:3.1.0") {
+        exclude group: "com.github.tony19", module: "logback-android"
+        exclude group: "ch.qos.logback", module: "logback-classic"
+        exclude group: "org.slf4j", module: "slf4j-api"
     }
 
-    implementation 'com.google.guava:guava:23.0'
+    implementation "com.google.guava:guava:24.1-jre"
 
-    implementation 'com.github.fondesa:kpermissions:1.0.0'
+    implementation "com.github.fondesa:kpermissions:1.0.0"
 
-    implementation 'com.afollestad.material-dialogs:core:2.0.0-beta2'
+    implementation "com.afollestad.material-dialogs:core:2.0.0-beta2"
 
-    testImplementation 'junit:junit:4.12'
 
-    androidTestImplementation 'androidx.test:runner:1.1.0-alpha4'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0-alpha4'
+    // retrofit
+    implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
+    implementation"com.squareup.retrofit2:converter-gson:$retrofitVersion"
+    implementation "com.squareup.retrofit2:retrofit-mock:$retrofitVersion"
+    implementation "com.squareup.okhttp3:logging-interceptor:$okhttpLoggingInterceptorVersion"
+
+    testImplementation "junit:junit:4.12"
+
+    androidTestImplementation "androidx.test:runner:$runnerVersion"
+    androidTestImplementation "androidx.test.espresso:espresso-core:3.1.0-alpha4"
 }
 
 apply plugin: 'com.google.gms.google-services'
