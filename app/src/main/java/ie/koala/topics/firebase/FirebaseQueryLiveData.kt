@@ -1,4 +1,4 @@
-package ie.koala.topics.framework.firebase
+package ie.koala.topics.firebase
 
 import android.os.Handler
 

@@ -1,4 +1,4 @@
-package ie.koala.topics.framework.adapter
+package ie.koala.topics.adapter
 
 import androidx.recyclerview.widget.RecyclerView
 

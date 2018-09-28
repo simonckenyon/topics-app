@@ -67,7 +67,7 @@
                 android:value=".feature.topic.TopicListActivity" />
         </activity>
         <activity
-            android:name=".feature.auth.SignInActivity"
+            android:name=".auth.SignInActivity"
             android:label="@string/title_activity_sign_in"
             android:parentActivityName=".app.MainActivity"
             android:theme="@style/AppTheme.NoActionBar"
@@ -77,7 +77,7 @@
                 android:value=".app.MainActivity" />
         </activity>
         <activity
-            android:name=".feature.auth.SignUpActivity"
+            android:name=".auth.SignUpActivity"
             android:label="@string/title_activity_sign_up"
             android:parentActivityName=".app.MainActivity"
             android:theme="@style/AppTheme.NoActionBar"
@@ -87,7 +87,7 @@
                 android:value=".app.MainActivity" />
         </activity>
         <activity
-            android:name=".feature.auth.ResetPasswordActivity"
+            android:name=".auth.ResetPasswordActivity"
             android:label="@string/title_activity_reset_password"
             android:parentActivityName=".app.MainActivity"
             android:theme="@style/AppTheme.NoActionBar"
@@ -117,7 +117,7 @@
                 android:value=".feature.topic.TopicListActivity" />
         </activity>
         <activity
-            android:name=".framework.preferences.PreferencesActivity"
+            android:name=".preferences.PreferencesActivity"
             android:label="@string/title_activity_settings"
             android:parentActivityName=".app.MainActivity"
             android:windowSoftInputMode="adjustResize">

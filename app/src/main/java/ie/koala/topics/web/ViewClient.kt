@@ -1,4 +1,4 @@
-package ie.koala.topics.framework.web
+package ie.koala.topics.web
 
 import android.content.ActivityNotFoundException
 import android.content.Context

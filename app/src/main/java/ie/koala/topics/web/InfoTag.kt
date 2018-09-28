@@ -1,4 +1,4 @@
-package ie.koala.topics.framework.web
+package ie.koala.topics.web
 
 import java.io.IOException
 import java.util.HashSet

@@ -1,4 +1,4 @@
-package ie.koala.topics.framework.firebase
+package ie.koala.topics.firebase
 
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData

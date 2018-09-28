@@ -1,4 +1,4 @@
-package ie.koala.topics.feature.auth
+package ie.koala.topics.auth
 
 import com.google.firebase.database.IgnoreExtraProperties
 

@@ -10,8 +10,8 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import ie.koala.topics.R
 import ie.koala.topics.feature.topic.Topic.Factory.ARG_TOPIC
-import ie.koala.topics.framework.web.AppWikiModel
-import ie.koala.topics.framework.web.ViewClient
+import ie.koala.topics.web.AppWikiModel
+import ie.koala.topics.web.ViewClient
 import kotlinx.android.synthetic.main.activity_topic_detail.*
 import org.slf4j.LoggerFactory
 

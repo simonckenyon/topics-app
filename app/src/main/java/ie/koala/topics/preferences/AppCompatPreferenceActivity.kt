@@ -1,4 +1,4 @@
-package ie.koala.topics.framework.preferences
+package ie.koala.topics.preferences
 
 import android.content.res.Configuration
 import android.os.Bundle

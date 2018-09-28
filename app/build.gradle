@@ -44,6 +44,7 @@ android {
         versionName "${versionMajor}.${versionMinor}.${versionPatch}"
         versionCode code
     }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -70,15 +71,17 @@ androidExtensions {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
+    // Kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion"
 
-    //implementation "com.android.support:multidex:1.0.3"
-
+    // AndroidX
     implementation "androidx.appcompat:appcompat:1.0.0"
     implementation "androidx.constraintlayout:constraintlayout:$constraintLayoutVersion"
-    implementation "com.google.android.material:material:$materialVersion"
     implementation "androidx.recyclerview:recyclerview:$recyclerViewVersion"
     implementation "androidx.legacy:legacy-support-v4:1.0.0"
+
+    // Material Design
+    implementation "com.google.android.material:material:$materialVersion"
 
     // architecture components
     implementation "android.arch.lifecycle:extensions:$archComponentsVersion"
@@ -86,48 +89,55 @@ dependencies {
     implementation "android.arch.persistence.room:runtime:$roomVersion"
     implementation "android.arch.paging:runtime:$pagingVersion"
 
-    implementation 'androidx.constraintlayout:constraintlayout:1.1.2'
-    kapt "android.arch.lifecycle:compiler:$archComponentsVersion"
-    kapt "android.arch.persistence.room:compiler:$roomVersion"
+    // Firebase
+    implementation "com.google.firebase:firebase-database:16.0.2"
+    implementation "com.google.firebase:firebase-core:16.0.3"
+    implementation "com.google.firebase:firebase-auth:16.0.3"
+    implementation "com.google.firebase:firebase-storage:16.0.2"
+    implementation "com.google.firebase:firebase-messaging:17.3.2"
+    implementation "com.google.firebase:firebase-config:16.0.0"
+    implementation "com.firebaseui:firebase-ui-auth:3.3.1"
+    implementation "com.firebaseui:firebase-ui:3.1.3"
 
-    implementation "com.jakewharton.rxbinding2:rxbinding-recyclerview-v7-kotlin:2.1.1"
-    implementation "com.androidhuman.rxfirebase2:firebase-database-kotlin:11.8.0.0"
-    implementation "io.reactivex.rxjava2:rxjava:2.1.14"
-
-    implementation "com.google.firebase:firebase-database:$firebaseDatabaseVersion"
-    implementation "com.google.firebase:firebase-core:$firebaseCoreVersion"
-    implementation "com.google.firebase:firebase-auth:$firebaseCoreVersion"
-
+    // Anko
     implementation "org.jetbrains.anko:anko:$ankoVersion"
     implementation "org.jetbrains.anko:anko-commons:$ankoVersion"
     implementation "org.jetbrains.anko:anko-design:$ankoVersion"
 
+    // Logging
     api "org.slf4j:slf4j-api:$slf4jVersion"
     api "org.slf4j:jul-to-slf4j:$slf4jVersion"
     api "com.github.tony19:logback-android:$logbackAndroidVersion"
 
+    // Misc libraries
     implementation files("libs/gravatar-android-1.0.jar")
     implementation "com.squareup.picasso:picasso:$picassoVersion"
     implementation "com.hendraanggrian.pikasso:pikasso:$pikassoVersion"
-
+    implementation "com.google.guava:guava:24.1-jre"
+    implementation "com.github.fondesa:kpermissions:1.0.0"
+    implementation "com.afollestad.material-dialogs:core:2.0.0-beta2"
     implementation("info.bliki.wiki:bliki-core:3.1.0") {
         exclude group: "com.github.tony19", module: "logback-android"
         exclude group: "ch.qos.logback", module: "logback-classic"
         exclude group: "org.slf4j", module: "slf4j-api"
     }
 
-    implementation "com.google.guava:guava:24.1-jre"
-
-    implementation "com.github.fondesa:kpermissions:1.0.0"
-
-    implementation "com.afollestad.material-dialogs:core:2.0.0-beta2"
-
-    // retrofit
+    // Retrofit
     implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
     implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion"
     implementation "com.squareup.retrofit2:retrofit-mock:$retrofitVersion"
     implementation "com.squareup.okhttp3:logging-interceptor:$okhttpLoggingInterceptorVersion"
 
+    // React
+    implementation "com.jakewharton.rxbinding2:rxbinding-recyclerview-v7-kotlin:2.1.1"
+    implementation "com.androidhuman.rxfirebase2:firebase-database-kotlin:11.8.0.0"
+    implementation "io.reactivex.rxjava2:rxjava:2.1.14"
+
+    // Kotlin annotation processors (JSR 269)
+    kapt "android.arch.lifecycle:compiler:$archComponentsVersion"
+    kapt "android.arch.persistence.room:compiler:$roomVersion"
+
+    // Testing
     testImplementation "junit:junit:4.12"
 
     androidTestImplementation "androidx.test:runner:$runnerVersion"
@@ -136,10 +146,10 @@ dependencies {
 
 apply plugin: 'com.google.gms.google-services'
 
-def gitSha() {
+static def gitSha() {
     return 'git rev-parse --short HEAD'.execute().text.trim()
 }
 
-def buildTime() {
+static def buildTime() {
     return new Date().format("yyyy-MM-dd'T'HH:mm:ssZ", TimeZone.getTimeZone("UTC"))
 }

@@ -1,4 +1,4 @@
-package ie.koala.topics.feature.auth
+package ie.koala.topics.contacts
 
 import android.Manifest
 import android.content.Intent
@@ -8,7 +8,8 @@ import android.view.View
 import com.fondesa.kpermissions.extension.listeners
 import com.fondesa.kpermissions.extension.permissionsBuilder
 import ie.koala.topics.R
-import ie.koala.topics.framework.ui.snackbar
+import ie.koala.topics.auth.SignUpActivity
+import ie.koala.topics.ui.snackbar
 import org.jetbrains.anko.alert
 
 import org.slf4j.LoggerFactory
@@ -18,7 +19,7 @@ class ContactReadPermission {
     companion object {
         private val log = LoggerFactory.getLogger(SignUpActivity::class.java)
 
-        fun get(activity: LoaderActivity, coordinatorLayout: View) {
+        fun get(activity: ContactLoaderActivity, coordinatorLayout: View) {
             val request = activity.permissionsBuilder(Manifest.permission.READ_CONTACTS).build()
             request.listeners {
                 onAccepted { _ ->
@@ -29,7 +30,7 @@ class ContactReadPermission {
 
                     // we have permission to use the contacts to fill the email addresss dropdown
                     // start the loader
-                    activity.getSupportLoaderManager().initLoader(LoaderActivity.LOADER_ID, null, activity)
+                    activity.getSupportLoaderManager().initLoader(ContactLoaderActivity.LOADER_ID, null, activity)
                 }
                 onDenied { _ ->
                     // Notified when the permissions are denied.
@@ -67,7 +68,7 @@ class ContactReadPermission {
             request.send()
         }
 
-        private fun createAppSettingsIntent(activity: LoaderActivity) = Intent().apply {
+        private fun createAppSettingsIntent(activity: ContactLoaderActivity) = Intent().apply {
             action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
             data = Uri.fromParts("package", activity.packageName, null)
         }

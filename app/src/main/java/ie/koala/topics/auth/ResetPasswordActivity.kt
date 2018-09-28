@@ -1,4 +1,4 @@
-package ie.koala.topics.feature.auth
+package ie.koala.topics.auth
 
 import android.os.Bundle
 import android.text.TextUtils
@@ -7,11 +7,13 @@ import android.widget.ArrayAdapter
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import ie.koala.topics.R
-import ie.koala.topics.framework.ui.snackbar
+import ie.koala.topics.contacts.ContactLoaderActivity
+import ie.koala.topics.contacts.ContactReadPermission
+import ie.koala.topics.ui.snackbar
 import kotlinx.android.synthetic.main.activity_reset_password.*
 import org.slf4j.LoggerFactory
 
-class ResetPasswordActivity : LoaderActivity() {
+class ResetPasswordActivity : ContactLoaderActivity() {
 
     private val log = LoggerFactory.getLogger(SignInActivity::class.java)
 

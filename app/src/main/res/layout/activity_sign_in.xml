@@ -5,7 +5,7 @@
     android:id="@+id/coordinator_layout_sign_in"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".feature.auth.SignInActivity">
+    tools:context=".auth.SignInActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -59,7 +59,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/progress_bar">
 
-                <ie.koala.topics.feature.auth.TextInputAutoCompleteTextView
+                <ie.koala.topics.ui.TextInputAutoCompleteTextView
                     android:id="@+id/input_email"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

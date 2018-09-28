@@ -1,4 +1,4 @@
-package ie.koala.topics.framework.preferences
+package ie.koala.topics.preferences
 
 import android.annotation.TargetApi
 import android.content.Context

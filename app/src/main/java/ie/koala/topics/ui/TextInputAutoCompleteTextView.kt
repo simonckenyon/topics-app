@@ -1,4 +1,4 @@
-package ie.koala.topics.feature.auth
+package ie.koala.topics.ui
 
 import android.content.Context
 import com.google.android.material.textfield.TextInputLayout

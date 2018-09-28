@@ -6,7 +6,7 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.FirebaseDatabase
-import ie.koala.topics.framework.firebase.FirebaseQueryLiveData
+import ie.koala.topics.firebase.FirebaseQueryLiveData
 
 class UserViewModel : ViewModel() {
 

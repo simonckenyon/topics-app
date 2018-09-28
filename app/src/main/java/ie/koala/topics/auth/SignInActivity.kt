@@ -1,4 +1,4 @@
-package ie.koala.topics.feature.auth
+package ie.koala.topics.auth
 
 import android.app.Activity
 import android.content.Intent
@@ -9,11 +9,13 @@ import android.view.View
 import android.widget.ArrayAdapter
 import com.google.firebase.auth.FirebaseAuth
 import ie.koala.topics.R
-import ie.koala.topics.framework.ui.snackbar
+import ie.koala.topics.contacts.ContactLoaderActivity
+import ie.koala.topics.contacts.ContactReadPermission
+import ie.koala.topics.ui.snackbar
 import kotlinx.android.synthetic.main.activity_sign_in.*
 import org.slf4j.LoggerFactory
 
-class SignInActivity : LoaderActivity() {
+class SignInActivity : ContactLoaderActivity() {
 
     private val log = LoggerFactory.getLogger(SignInActivity::class.java)
 

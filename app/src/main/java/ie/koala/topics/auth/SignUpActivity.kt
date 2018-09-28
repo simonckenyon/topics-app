@@ -1,4 +1,4 @@
-package ie.koala.topics.feature.auth
+package ie.koala.topics.auth
 
 import android.app.Activity
 import android.content.Intent
@@ -10,12 +10,14 @@ import android.view.inputmethod.EditorInfo
 import android.widget.ArrayAdapter
 import com.google.firebase.auth.FirebaseAuth
 import ie.koala.topics.R
-import ie.koala.topics.framework.ui.snackbar
+import ie.koala.topics.contacts.ContactLoaderActivity
+import ie.koala.topics.contacts.ContactReadPermission
+import ie.koala.topics.ui.snackbar
 import kotlinx.android.synthetic.main.activity_sign_up.*
 import org.slf4j.LoggerFactory
 
 
-class SignUpActivity : LoaderActivity() {
+class SignUpActivity : ContactLoaderActivity() {
 
     private var auth: FirebaseAuth? = null
 

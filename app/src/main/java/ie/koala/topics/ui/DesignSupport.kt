@@ -1,4 +1,4 @@
-package ie.koala.topics.framework.ui
+package ie.koala.topics.ui
 
 import android.app.Activity
 import android.view.View

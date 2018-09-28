@@ -19,8 +19,6 @@ buildscript {
         roomVersion = '1.1.1'
         pagingVersion = '1.0.1'
 
-        firebaseCoreVersion = '16.0.3'
-        firebaseDatabaseVersion = '16.0.2'
         retrofitVersion = '2.3.0'
         okhttpLoggingInterceptorVersion = '3.9.0'
         pikassoVersion = '0.1'

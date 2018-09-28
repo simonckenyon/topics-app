@@ -20,8 +20,8 @@ import android.widget.TextView
 import ie.koala.topics.R
 
 
-import ie.koala.topics.framework.adapter.BaseViewHolder
-import ie.koala.topics.framework.adapter.OnRecyclerItemClickListener
+import ie.koala.topics.adapter.BaseViewHolder
+import ie.koala.topics.adapter.OnRecyclerItemClickListener
 import org.slf4j.LoggerFactory
 import android.view.MotionEvent
 import androidx.core.view.MotionEventCompat

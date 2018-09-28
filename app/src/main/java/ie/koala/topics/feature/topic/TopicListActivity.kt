@@ -14,9 +14,9 @@ import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.database.*
 import ie.koala.topics.R
 import ie.koala.topics.feature.topic.TopicReference.FIREBASE_TOPICS
-import ie.koala.topics.framework.adapter.ItemTouchHelperCallback
-import ie.koala.topics.framework.adapter.OnRecyclerItemClickListener
-import ie.koala.topics.framework.ui.snackbar
+import ie.koala.topics.adapter.ItemTouchHelperCallback
+import ie.koala.topics.adapter.OnRecyclerItemClickListener
+import ie.koala.topics.ui.snackbar
 import kotlinx.android.synthetic.main.activity_topic_list.*
 import org.slf4j.LoggerFactory
 import java.util.*
@@ -162,7 +162,7 @@ class TopicListActivity : AppCompatActivity(), OnRecyclerItemClickListener, Topi
                         coordinator_layout_topic_list.snackbar(getString(R.string.message_topic_added, topic.title))
                     }
                 }
-                .negativeButton(R.string.button_cancel) { dialog ->
+                .negativeButton(R.string.button_cancel) { _ ->
                     // Do something
                 }
                 .show()

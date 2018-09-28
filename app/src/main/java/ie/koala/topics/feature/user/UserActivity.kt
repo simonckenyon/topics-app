@@ -5,8 +5,8 @@ import androidx.annotation.Nullable
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProviders
 import ie.koala.topics.R
-import ie.koala.topics.framework.firebase.nonNull
-import ie.koala.topics.framework.firebase.observe
+import ie.koala.topics.firebase.nonNull
+import ie.koala.topics.firebase.observe
 import kotlinx.android.synthetic.main.activity_user.*
 import org.slf4j.LoggerFactory
 import java.util.*

@@ -4,8 +4,8 @@ import android.content.Context
 import android.view.ViewGroup
 
 import ie.koala.topics.R
-import ie.koala.topics.framework.adapter.GenericRecyclerViewAdapter
-import ie.koala.topics.framework.adapter.OnRecyclerItemClickListener
+import ie.koala.topics.adapter.GenericRecyclerViewAdapter
+import ie.koala.topics.adapter.OnRecyclerItemClickListener
 
 class TopicListAdapter(context: Context, listener: OnRecyclerItemClickListener) : GenericRecyclerViewAdapter<Topic, OnRecyclerItemClickListener, TopicViewHolder>(context, listener) {
 
