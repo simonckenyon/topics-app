@@ -16,7 +16,6 @@
 
 package ie.koala.topics.feature.github.api
 
-
 import ie.koala.topics.feature.github.model.Repo
 import com.google.gson.annotations.SerializedName
 

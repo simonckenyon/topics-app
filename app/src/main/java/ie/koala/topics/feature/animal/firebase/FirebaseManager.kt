@@ -28,13 +28,13 @@ object FirebaseManager {
 
             override fun onChildAdded(p0: DataSnapshot, p1: String?) {
                 animalAdapterInvalidation.onNext(true)
-            }
+                            }
 
             override fun onChildRemoved(p0: DataSnapshot) {
                 animalAdapterInvalidation.onNext(true)
-            }
-        })
-    }
+                        }
+                    })
+        }
 
     fun getAnimalChangeSubject(): PublishSubject<Any>? {
         return animalAdapterInvalidation
