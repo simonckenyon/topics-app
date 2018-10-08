@@ -18,6 +18,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
+
+        <provider
+            android:name=".feature.stocks.koin.KoinInitContentProvider"
+            android:authorities="${applicationId}"
+            android:exported="false" />
+
         <activity
             android:name=".app.MainActivity"
             android:label="@string/title_activity_main"
@@ -117,6 +123,15 @@
                 android:value=".feature.topic.TopicListActivity" />
         </activity>
         <activity
+            android:name=".feature.stocks.StocksActivity"
+            android:label="@string/activity_articles"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustResize">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".app.MainActivity" />
+        </activity>
+        <activity
             android:name=".preferences.PreferencesActivity"
             android:label="@string/title_activity_settings"
             android:parentActivityName=".app.MainActivity"
@@ -133,6 +148,20 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".app.MainActivity" />
+        </activity>
+        <activity
+            android:name=".auth.AuthActivity"
+            android:label="@string/title_activity_auth"
+            android:parentActivityName=".app.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="ie.koala.topics.app.MainActivity" />
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
     </application>
 

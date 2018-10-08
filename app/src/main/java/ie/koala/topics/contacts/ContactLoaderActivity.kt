@@ -4,12 +4,13 @@ import android.database.Cursor
 import android.os.Bundle
 import android.provider.ContactsContract
 import androidx.appcompat.app.AppCompatActivity
+import androidx.loader.app.LoaderManager
 import android.widget.ArrayAdapter
 import ie.koala.topics.auth.SignUpActivity
 import org.slf4j.LoggerFactory
 import java.util.ArrayList
 
-abstract class ContactLoaderActivity: AppCompatActivity(), androidx.loader.app.LoaderManager.LoaderCallbacks<Cursor> {
+abstract class ContactLoaderActivity: AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor> {
 
 
     var adapter: ArrayAdapter<String>? = null
@@ -73,6 +74,5 @@ abstract class ContactLoaderActivity: AppCompatActivity(), androidx.loader.app.L
      * @param emailAddressCollection
      */
     abstract fun addEmailsToAutoComplete(emailAddressCollection: List<String>)
-
 
 }

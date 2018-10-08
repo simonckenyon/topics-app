@@ -16,6 +16,7 @@ import ie.koala.topics.feature.animal.AnimalActivity
 import ie.koala.topics.auth.SignInActivity
 import ie.koala.topics.auth.SignUpActivity
 import ie.koala.topics.feature.github.ui.GithubActivity
+import ie.koala.topics.feature.stocks.StocksActivity
 import ie.koala.topics.feature.topic.TopicListActivity
 import ie.koala.topics.feature.user.UserActivity
 import ie.koala.topics.preferences.PreferenceHelper.defaultPrefs
@@ -34,8 +35,6 @@ class MainActivity : AppCompatActivity() {
     private var navigationDrawerMenuState: MenuState = MenuState.APP
 
     private var auth: FirebaseAuth? = null
-
-    private val log = LoggerFactory.getLogger(MainActivity::class.java)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,6 +82,10 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.nav_search_github -> {
                     startActivity<GithubActivity>()
+                    true
+                }
+                R.id.nav_stocks -> {
+                    startActivity<StocksActivity>()
                     true
                 }
                 R.id.nav_sign_in -> {
@@ -206,5 +209,9 @@ class MainActivity : AppCompatActivity() {
         } else {
             MenuState.APP
         }
+    }
+
+    companion object {
+        private val log = LoggerFactory.getLogger(MainActivity::class.java)
     }
 }

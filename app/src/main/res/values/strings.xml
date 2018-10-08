@@ -81,5 +81,8 @@
     <string name="unknown">\?</string>
     <string name="activity_search_github">Search GitHub</string>
     <string name="menu_search_github">Search GitHub</string>
+    <string name="title_activity_auth">AuthActivity</string>
+    <string name="activity_articles">Articles</string>
+    <string name="activity_stocks">Stocks</string>
 
 </resources>
