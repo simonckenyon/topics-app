@@ -40,7 +40,7 @@ class AppExecutors internal constructor() {
     val networkExecutorService: ExecutorService by lazy { Executors.newFixedThreadPool(NUM_NETWORK_THREADS) }
     /** For work that's bound to CPU computation. */
     val cpuExecutorService: ExecutorService by lazy { Executors.newFixedThreadPool(NUM_CPU_THREADS) }
-    /** For work that must run on the main thread. */
+    /** For work that must run on the menu_main thread. */
     val mainExecutor by lazy { MainThreadExecutor() }
 
     class MainThreadExecutor : Executor {

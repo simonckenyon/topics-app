@@ -1,24 +1,25 @@
 package ie.koala.topics.app
 
+import android.app.SearchManager
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
 import androidx.core.view.GravityCompat
 import com.google.firebase.auth.FirebaseAuth
 import com.hendraanggrian.pikasso.picasso
 import com.hendraanggrian.pikasso.transformations.circle
 import fr.tkeunebr.gravatar.Gravatar
 import ie.koala.topics.R
-import ie.koala.topics.feature.animal.AnimalActivity
 import ie.koala.topics.auth.SignInActivity
 import ie.koala.topics.auth.SignUpActivity
-import ie.koala.topics.feature.github.ui.GithubActivity
-import ie.koala.topics.feature.stocks.StocksActivity
-import ie.koala.topics.feature.topic.TopicListActivity
+import ie.koala.topics.ui.TopicListActivity
 import ie.koala.topics.feature.user.UserActivity
+import ie.koala.topics.model.Wiki
 import ie.koala.topics.preferences.PreferenceHelper.defaultPrefs
 import ie.koala.topics.preferences.PreferenceKeys.NAV_MODE_NORMAL
 import ie.koala.topics.preferences.PreferencesActivity
@@ -64,7 +65,7 @@ class MainActivity : AppCompatActivity() {
         nav_view.setNavigationItemSelectedListener { menuItem ->
             // set item as selected to persist highlight
             menuItem.isChecked = true
-            // close drawer when item is tapped
+            // close menu_drawer when item is tapped
             drawer_layout.closeDrawer(GravityCompat.START)
 
             when (menuItem.itemId) {
@@ -74,18 +75,6 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.nav_user -> {
                     startActivity<UserActivity>()
-                    true
-                }
-                R.id.nav_animals -> {
-                    startActivity<AnimalActivity>()
-                    true
-                }
-                R.id.nav_search_github -> {
-                    startActivity<GithubActivity>()
-                    true
-                }
-                R.id.nav_stocks -> {
-                    startActivity<StocksActivity>()
                     true
                 }
                 R.id.nav_sign_in -> {
@@ -99,6 +88,20 @@ class MainActivity : AppCompatActivity() {
                 R.id.menu_sign_out -> {
                     auth!!.signOut()
                     updateNavigationMenu()
+                    true
+                }
+                R.id.nav_settings -> {
+                    startActivity<PreferencesActivity>()
+                    true
+                }
+                R.id.nav_copyright -> {
+                    val wiki = Wiki("Copyright Statement", "copyright")
+                    startActivity<WikiActivity>(WikiActivity.ARG_WIKI to wiki)
+                    true
+                }
+                R.id.nav_about -> {
+                    val wiki = Wiki("About this app", "about")
+                    startActivity<WikiActivity>(WikiActivity.ARG_WIKI to wiki)
                     true
                 }
                 else -> false
@@ -134,7 +137,13 @@ class MainActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu
         // this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.main, menu)
+        menuInflater.inflate(R.menu.menu_main, menu)
+        // Associate searchable configuration with the SearchView
+        val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
+        (menu.findItem(R.id.search).actionView as SearchView).apply {
+            setSearchableInfo(searchManager.getSearchableInfo(componentName))
+            isSubmitButtonEnabled = true
+        }
         return true
     }
 

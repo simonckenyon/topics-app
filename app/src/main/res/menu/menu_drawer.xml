@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="nav_view">
+
+    <group
+        android:id="@+id/menu_sign_in"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_sign_in"
+            android:icon="@drawable/ic_menu_sign_in"
+            android:title="@string/menu_sign_in" />
+        <item
+            android:id="@+id/nav_sign_up"
+            android:icon="@drawable/ic_menu_sign_up"
+            android:title="@string/menu_sign_up" />
+    </group>
+    <group
+        android:id="@+id/menu_sign_out"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_sign_out"
+            android:icon="@drawable/ic_menu_sign_out"
+            android:title="@string/menu_sign_out" />
+    </group>
+    <group
+        android:id="@+id/menu_authenticated"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_topics"
+            android:icon="@drawable/ic_menu_topic"
+            android:title="@string/menu_topics" />
+        <item
+            android:id="@+id/nav_user"
+            android:icon="@drawable/ic_menu_user"
+            android:title="@string/menu_users" />
+        <item
+            android:id="@+id/nav_animals"
+            android:icon="@drawable/ic_menu_animal"
+            android:title="@string/menu_animals" />
+        <item
+            android:id="@+id/nav_search_github"
+            android:icon="@drawable/ic_menu_github"
+            android:title="@string/menu_search_github" />
+        <item
+            android:id="@+id/nav_stocks"
+            android:icon="@drawable/ic_menu_stocks"
+            android:title="@string/activity_stocks" />
+    </group>
+    <group>
+        <item
+            android:id="@+id/nav_copyright"
+            android:icon="@drawable/ic_copyright"
+            android:title="@string/menu_copyright" />
+        <item
+            android:id="@+id/nav_settings"
+            android:icon="@drawable/ic_settings"
+            android:title="@string/menu_settings" />
+        <item
+            android:id="@+id/nav_about"
+            android:icon="@drawable/ic_about"
+            android:title="@string/menu_about" />
+
+    </group>
+
+</menu>

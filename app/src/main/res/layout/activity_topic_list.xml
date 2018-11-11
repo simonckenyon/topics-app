@@ -6,7 +6,7 @@
     android:id="@+id/coordinator_layout_topic_list"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".feature.topic.TopicListActivity">
+    tools:context=".ui.TopicListActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -36,7 +36,7 @@
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:context=".feature.topic.TopicListActivity"
+            tools:context=".ui.TopicListActivity"
             tools:listitem="@layout/topic_list_content" />
     </FrameLayout>
 

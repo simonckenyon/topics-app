@@ -45,17 +45,24 @@ android {
 
         javaCompileOptions {
             annotationProcessorOptions {
-                arguments = ["room.schemaLocation":
-                                     "$projectDir/schemas".toString()]
+                arguments = ["room.schemaLocation": "$projectDir/schemas".toString()]
             }
         }
     }
 
     buildTypes {
+        debug {
+            buildConfigField 'String', "ApiKey", Topics_ApiKey
+            resValue 'string', "api_key", Topics_ApiKey
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
+            buildConfigField 'String', "ApiKey", Topics_ApiKey
+            resValue 'string', "api_key", Topics_ApiKey
         }
+
     }
 
     lintOptions {
