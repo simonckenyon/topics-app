@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.preference.PreferenceFragmentCompat
 import ie.koala.topics.R
 
-class HelpSettingsFragment: PreferenceFragmentCompat() {
+class HelpPreferencesFragment: PreferenceFragmentCompat() {
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.help_preferences, rootKey)

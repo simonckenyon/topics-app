@@ -11,7 +11,6 @@ import android.view.MenuItem
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
-import androidx.core.view.GravityCompat
 import androidx.navigation.Navigation.findNavController
 import androidx.navigation.ui.NavigationUI.*
 import com.google.firebase.auth.FirebaseAuth
@@ -24,8 +23,6 @@ import ie.koala.topics.auth.SignUpActivity
 import ie.koala.topics.feature.user.UserActivity
 import ie.koala.topics.fragment.MainFragmentDirections
 import ie.koala.topics.model.Wiki
-import ie.koala.topics.preferences.MySettingsActivity
-import ie.koala.topics.preferences.PreferenceHelper.defaultPrefs
 import ie.koala.topics.preferences.PreferencesActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.nav_header_main.view.*
@@ -199,7 +196,7 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
                 R.id.nav_settings -> {
-                    startActivity<MySettingsActivity>()
+                    startActivity<PreferencesActivity>()
                     true
                 }
                 R.id.nav_copyright -> {
