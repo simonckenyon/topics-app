@@ -1,15 +1,19 @@
-package ie.koala.topics.app
+package ie.koala.topics.activity
 
 import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.PersistableBundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.GravityCompat
+import androidx.navigation.Navigation.findNavController
+import androidx.navigation.ui.NavigationUI.*
 import com.google.firebase.auth.FirebaseAuth
 import com.hendraanggrian.pikasso.picasso
 import com.hendraanggrian.pikasso.transformations.circle
@@ -17,11 +21,11 @@ import fr.tkeunebr.gravatar.Gravatar
 import ie.koala.topics.R
 import ie.koala.topics.auth.SignInActivity
 import ie.koala.topics.auth.SignUpActivity
-import ie.koala.topics.ui.TopicListActivity
 import ie.koala.topics.feature.user.UserActivity
+import ie.koala.topics.fragment.MainFragmentDirections
 import ie.koala.topics.model.Wiki
+import ie.koala.topics.preferences.MySettingsActivity
 import ie.koala.topics.preferences.PreferenceHelper.defaultPrefs
-import ie.koala.topics.preferences.PreferenceKeys.NAV_MODE_NORMAL
 import ie.koala.topics.preferences.PreferencesActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.nav_header_main.view.*
@@ -51,88 +55,70 @@ class MainActivity : AppCompatActivity() {
             updateNavigationMenu()
         }
 
-        version_name.text = TopicsApplication.versionName
-        version_code.text = TopicsApplication.versionCode
-        version_build_timestamp.text = TopicsApplication.versionBuildTimestamp
-        version_git_hash.text = TopicsApplication.versionGitHash
-
         val toggle = ActionBarDrawerToggle(
                 this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
         drawer_layout.addDrawerListener(toggle)
         toggle.syncState()
 
+        log.debug("onCreate:")
+        Log.d("MainActivity", "in onCreate")
         updateNavigationMenu()
-        nav_view.setNavigationItemSelectedListener { menuItem ->
-            // set item as selected to persist highlight
-            menuItem.isChecked = true
-            // close menu_drawer when item is tapped
-            drawer_layout.closeDrawer(GravityCompat.START)
-
-            when (menuItem.itemId) {
-                R.id.nav_topics -> {
-                    startActivity<TopicListActivity>()
-                    true
-                }
-                R.id.nav_user -> {
-                    startActivity<UserActivity>()
-                    true
-                }
-                R.id.nav_sign_in -> {
-                    startActivity<SignInActivity>()
-                    true
-                }
-                R.id.nav_sign_up -> {
-                    startActivity<SignUpActivity>()
-                    true
-                }
-                R.id.menu_sign_out -> {
-                    auth!!.signOut()
-                    updateNavigationMenu()
-                    true
-                }
-                R.id.nav_settings -> {
-                    startActivity<PreferencesActivity>()
-                    true
-                }
-                R.id.nav_copyright -> {
-                    val wiki = Wiki("Copyright Statement", "copyright")
-                    startActivity<WikiActivity>(WikiActivity.ARG_WIKI to wiki)
-                    true
-                }
-                R.id.nav_about -> {
-                    val wiki = Wiki("About this app", "about")
-                    startActivity<WikiActivity>(WikiActivity.ARG_WIKI to wiki)
-                    true
-                }
-                else -> false
-            }
-        }
+        setupNavigation()
     }
 
-    override fun onBackPressed() {
-        val prefs = defaultPrefs(this)
-        val navModeNormal: Boolean = prefs.getBoolean(NAV_MODE_NORMAL, false)
-        when (navModeNormal) {
-            true ->
-                if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
-                    drawer_layout.closeDrawer(GravityCompat.START)
-                } else {
-                    super.onBackPressed()
-                }
-            else ->
-                if (!drawer_layout.isDrawerOpen(GravityCompat.START)) {
-                    drawer_layout.openDrawer(GravityCompat.START)
-                } else {
-                    super.onBackPressed()
-                }
-        }
-    }
+//    override fun onSupportNavigateUp(): Boolean {
+//        return navigateUp(findNavController(this, R.id.container), drawer_layout)
+//    }
 
     override fun onResume() {
         super.onResume()
 
         updateNavigationMenu()
     }
+
+    /*
+ * begin DUMB Navigation Component hack
+ *
+ * This fixes an IllegalArgumentException that can sometimes be thrown from within the
+ * Navigation Architecture Component when you try to navigate after the Fragment has had its
+ * state restored. It occurs because the navController's currentDestination field is null,
+ * which stores where we currently are in the navigation graph. Because it's null, the
+ * Navigation Component can't figure out our current position in relation to where we're
+ * trying to navigate to, causing the exception to be thrown.
+ *
+ * This fix gives the navController a little nudge by gently setting it to where we currently
+ * are in the navigation graph.
+ *
+ * This fix is verified as both working AND necessary as of Navigation Components version
+ * 1.0.0-alpha07.
+ *
+ * There's a tiny bit more information at this thread, but it's pretty limited:
+ * https://stackoverflow.com/questions/52101617/navigation-destination-unknown-to-this-navcontroller-after-an-activity-result
+ */
+    private var checkCurrentDestination = false
+
+    override fun onStart() {
+        super.onStart()
+        log.debug("onStart:")
+
+        val navController = findNavController(this, R.id.container)
+
+        if (checkCurrentDestination && navController.currentDestination == null) {
+            log.debug("onStart: currentDestination is null")
+            navController.navigate(navController.graph.startDestination)
+        }
+
+        checkCurrentDestination = false
+    }
+
+    override fun onStop() {
+        super.onStop()
+        log.debug("onStop:")
+        checkCurrentDestination = true
+    }
+    /*
+     * end DUMB Navigation Component hack
+     */
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu
@@ -155,9 +141,8 @@ class MainActivity : AppCompatActivity() {
         else -> super.onOptionsItemSelected(item)
     }
 
-    override fun onSaveInstanceState(outState: Bundle?) {
-        super.onSaveInstanceState(outState)
-
+    override fun onSaveInstanceState(outState: Bundle?, outPersistentState: PersistableBundle?) {
+        super.onSaveInstanceState(outState, outPersistentState)
         outState?.putSerializable("navigationDrawerMenuState", navigationDrawerMenuState)
     }
 
@@ -170,6 +155,68 @@ class MainActivity : AppCompatActivity() {
     private inline fun consume(f: () -> Unit): Boolean {
         f()
         return true
+    }
+
+    private fun setupNavigation() {
+        val navController = findNavController(this, R.id.container)
+
+        // Update action bar to reflect navigation
+        setupActionBarWithNavController(this, navController, drawer_layout)
+
+        // Tie nav graph to items in nav drawer
+        //setupWithNavController(nav_view, navController)
+
+        // Handle nav drawer item clicks
+        log.debug("setupNavigation: register listener")
+        nav_view.setNavigationItemSelectedListener { menuItem ->
+            log.debug("onNavigationItemSelected: menuItem=$menuItem")
+            // set item as selected to persist highlight
+            //menuItem.isChecked = true
+            // close menu_drawer when item is tapped
+            drawer_layout.closeDrawers()
+
+            when (menuItem.itemId) {
+                R.id.nav_topics -> {
+                    val action = MainFragmentDirections.actionTopicList()
+                    findNavController(this, R.id.container).navigate(action)
+                    true
+                }
+                R.id.nav_user -> {
+                    startActivity<UserActivity>()
+                    true
+                }
+                R.id.nav_sign_in -> {
+                    startActivity<SignInActivity>()
+                    true
+                }
+                R.id.nav_sign_up -> {
+                    startActivity<SignUpActivity>()
+                    true
+                }
+                R.id.menu_sign_out -> {
+                    auth!!.signOut()
+                    updateNavigationMenu()
+                    true
+                }
+                R.id.nav_settings -> {
+                    startActivity<MySettingsActivity>()
+                    true
+                }
+                R.id.nav_copyright -> {
+                    val wiki = Wiki("Copyright Statement", "copyright")
+                    val action = MainFragmentDirections.actionWiki(wiki)
+                    findNavController(this, R.id.container).navigate(action)
+                    true
+                }
+                R.id.nav_about -> {
+                    val wiki = Wiki("About this app", "about")
+                    val action = MainFragmentDirections.actionWiki(wiki)
+                    findNavController(this, R.id.container).navigate(action)
+                    true
+                }
+                else -> false
+            }
+        }
     }
 
     private fun updateNavigationMenu() {

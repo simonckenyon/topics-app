@@ -93,5 +93,8 @@
     <string name="message_no_topics">Could not get any topic data</string>
     <string name="action_search">Search</string>
     <string name="action_refresh">Refresh</string>
+    <string name="label_main">Koala Topics</string>
+    <string name="label_topic_list">Topic List</string>
+    <string name="label_topic_edit">Edit Topic</string>
 
 </resources>

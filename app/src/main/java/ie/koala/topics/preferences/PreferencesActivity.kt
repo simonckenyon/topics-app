@@ -81,7 +81,7 @@ class PreferencesActivity : AppCompatPreferenceActivity() {
     }
 
     /**
-     * This fragment shows general preferences only. It is used when the
+     * This fragment shows general help_preferences only. It is used when the
      * activity is showing a two-pane settings UI.
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
@@ -91,7 +91,7 @@ class PreferencesActivity : AppCompatPreferenceActivity() {
             addPreferencesFromResource(R.xml.pref_general)
             setHasOptionsMenu(true)
 
-            // Bind the summaries of EditText/List/Dialog/Ringtone preferences
+            // Bind the summaries of EditText/List/Dialog/Ringtone help_preferences
             // to their values. When their values change, their summaries are
             // updated to reflect the new value, per the Android Design
             // guidelines.
@@ -110,7 +110,7 @@ class PreferencesActivity : AppCompatPreferenceActivity() {
     }
 
     /**
-     * This fragment shows notification preferences only. It is used when the
+     * This fragment shows notification help_preferences only. It is used when the
      * activity is showing a two-pane settings UI.
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
@@ -120,7 +120,7 @@ class PreferencesActivity : AppCompatPreferenceActivity() {
             addPreferencesFromResource(R.xml.pref_notification)
             setHasOptionsMenu(true)
 
-            // Bind the summaries of EditText/List/Dialog/Ringtone preferences
+            // Bind the summaries of EditText/List/Dialog/Ringtone help_preferences
             // to their values. When their values change, their summaries are
             // updated to reflect the new value, per the Android Design
             // guidelines.
@@ -138,7 +138,7 @@ class PreferencesActivity : AppCompatPreferenceActivity() {
     }
 
     /**
-     * This fragment shows data and sync preferences only. It is used when the
+     * This fragment shows data and sync help_preferences only. It is used when the
      * activity is showing a two-pane settings UI.
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
@@ -148,7 +148,7 @@ class PreferencesActivity : AppCompatPreferenceActivity() {
             addPreferencesFromResource(R.xml.pref_data_sync)
             setHasOptionsMenu(true)
 
-            // Bind the summaries of EditText/List/Dialog/Ringtone preferences
+            // Bind the summaries of EditText/List/Dialog/Ringtone help_preferences
             // to their values. When their values change, their summaries are
             // updated to reflect the new value, per the Android Design
             // guidelines.
@@ -175,7 +175,7 @@ class PreferencesActivity : AppCompatPreferenceActivity() {
             val stringValue = value.toString()
 
             if (preference is ListPreference) {
-                // For list preferences, look up the correct display value in
+                // For list help_preferences, look up the correct display value in
                 // the preference's 'entries' list.
                 val listPreference = preference
                 val index = listPreference.findIndexOfValue(stringValue)
@@ -188,7 +188,7 @@ class PreferencesActivity : AppCompatPreferenceActivity() {
                             null)
 
             } else if (preference is RingtonePreference) {
-                // For ringtone preferences, look up the correct display value
+                // For ringtone help_preferences, look up the correct display value
                 // using RingtoneManager.
                 if (TextUtils.isEmpty(stringValue)) {
                     // Empty values correspond to 'silent' (no ringtone).
@@ -210,7 +210,7 @@ class PreferencesActivity : AppCompatPreferenceActivity() {
                 }
 
             } else {
-                // For all other preferences, set the summary to the value's
+                // For all other help_preferences, set the summary to the value's
                 // simple string representation.
                 preference.summary = stringValue
             }

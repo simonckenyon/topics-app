@@ -1,0 +1,9 @@
+<androidx.preference.PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <Preference
+        app:fragment="ie.koala.topics.preferences.HelpSettingsFragment"
+        app:key="feedback"
+        app:summary="Report technical issues or suggest new features"
+        app:title="Send feedback" />
+
+</androidx.preference.PreferenceScreen>

@@ -25,7 +25,7 @@
             android:exported="false" />
 
         <activity
-            android:name=".app.MainActivity"
+            android:name=".activity.MainActivity"
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustResize">
@@ -42,93 +42,55 @@
             android:windowSoftInputMode="adjustResize">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".app.MainActivity" />
-        </activity>
-        <activity
-            android:name=".ui.TopicListActivity"
-            android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustResize">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".app.MainActivity" />
-        </activity>
-        <activity
-            android:name=".ui.TopicDetailActivity"
-            android:label="@string/title_topic_detail"
-            android:parentActivityName=".ui.TopicListActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustResize">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.TopicListActivity" />
+                android:value=".activity.MainActivity" />
         </activity>
         <activity
             android:name=".auth.SignInActivity"
             android:label="@string/title_activity_sign_in"
-            android:parentActivityName=".app.MainActivity"
+            android:parentActivityName=".activity.MainActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustResize">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".app.MainActivity" />
+                android:value=".activity.MainActivity" />
         </activity>
         <activity
             android:name=".auth.SignUpActivity"
             android:label="@string/title_activity_sign_up"
-            android:parentActivityName=".app.MainActivity"
+            android:parentActivityName=".activity.MainActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustResize">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".app.MainActivity" />
+                android:value=".activity.MainActivity" />
         </activity>
         <activity
             android:name=".auth.ResetPasswordActivity"
             android:label="@string/title_activity_reset_password"
-            android:parentActivityName=".app.MainActivity"
+            android:parentActivityName=".activity.MainActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustResize">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".app.MainActivity" />
+                android:value=".activity.MainActivity" />
         </activity>
         <activity
-            android:name=".ui.TopicEditActivity"
-            android:label="@string/title_activity_topic_edit"
-            android:parentActivityName=".ui.TopicDetailActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustResize">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.TopicDetailActivity" />
-        </activity>
-        <activity
-            android:name=".ui.TopicAddActivity"
-            android:label="@string/title_activity_topic_add"
-            android:parentActivityName=".ui.TopicListActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustResize">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.TopicListActivity" />
-        </activity>
-        <activity
-            android:name=".preferences.PreferencesActivity"
+            android:name=".preferences.MySettingsActivity"
             android:label="@string/title_activity_settings"
-            android:parentActivityName=".app.MainActivity"
+            android:parentActivityName=".activity.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustResize">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="ie.koala.topics.app.MainActivity" />
+                android:value="ie.koala.topics.activity.MainActivity" />
         </activity>
         <activity
             android:name=".auth.AuthActivity"
             android:label="@string/title_activity_auth"
-            android:parentActivityName=".app.MainActivity">
+            android:parentActivityName=".activity.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="ie.koala.topics.app.MainActivity" />
+                android:value="ie.koala.topics.activity.MainActivity" />
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -137,22 +99,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".app.WikiActivity"
-            android:parentActivityName=".app.MainActivity"
+            android:name=".activity.DetailActivity"
+            android:parentActivityName=".activity.MainActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustResize">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".app.MainActivity" />
-        </activity>
-        <activity
-            android:name=".app.DetailActivity"
-            android:parentActivityName=".app.MainActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustResize">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".app.MainActivity" />
+                android:value=".activity.MainActivity" />
         </activity>
     </application>
 

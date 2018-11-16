@@ -1,0 +1,15 @@
+<androidx.preference.PreferenceScreen
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <Preference
+        app:key="notifications_fragment"
+        app:title="Notifications"
+        app:fragment="ie.koala.topics.preferences.NotificationsSettingsFragment"
+        app:icon="@drawable/ic_notifications"/>
+    <Preference
+        app:key="help_fragment"
+        app:title="Help"
+        app:fragment="ie.koala.topics.preferences.HelpSettingsFragment"
+        app:icon="@drawable/ic_help"/>
+
+</androidx.preference.PreferenceScreen>

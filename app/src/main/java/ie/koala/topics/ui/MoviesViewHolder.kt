@@ -24,7 +24,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import ie.koala.topics.R
-import ie.koala.topics.app.DetailActivity
+import ie.koala.topics.activity.DetailActivity
 import ie.koala.topics.model.Topic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory

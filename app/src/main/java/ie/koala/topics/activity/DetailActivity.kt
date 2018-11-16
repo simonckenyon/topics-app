@@ -1,4 +1,4 @@
-package ie.koala.topics.app
+package ie.koala.topics.activity
 
 import android.content.Context
 import android.content.Intent

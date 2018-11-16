@@ -1,31 +1,31 @@
-package ie.koala.topics.ui
+package ie.koala.topics.feature.topic
 
-import android.content.Intent
 import android.os.Bundle
-import android.view.MenuItem
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.NavUtils
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.afollestad.materialdialogs.MaterialDialog
-import com.afollestad.materialdialogs.customview.customView
-import com.afollestad.materialdialogs.customview.getCustomView
-import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.database.*
 import ie.koala.topics.R
-import ie.koala.topics.feature.topic.TopicReference.FIREBASE_TOPICS
 import ie.koala.topics.adapter.ItemTouchHelperCallback
 import ie.koala.topics.adapter.OnRecyclerItemClickListener
+import ie.koala.topics.feature.topic.TopicReference.FIREBASE_TOPICS
+import ie.koala.topics.feature.topic.TopicListFragmentDirections
 import ie.koala.topics.model.Topic
-import kotlinx.android.synthetic.main.activity_topic_list.*
+import ie.koala.topics.ui.TopicListAdapter
+import ie.koala.topics.ui.TopicListener
+import ie.koala.topics.ui.snackbar
+import kotlinx.android.synthetic.main.fragment_topic_list.*
 import org.slf4j.LoggerFactory
 import java.util.*
 
-
 /**
- * An activity representing a list of Topics.
+ * A fragment representing a list of Topics.
  */
-class TopicListActivity : AppCompatActivity(), OnRecyclerItemClickListener, TopicListener {
+class TopicListFragment : Fragment(), OnRecyclerItemClickListener, TopicListener {
 
     private var topicList: MutableList<Topic> = mutableListOf()
 
@@ -35,25 +35,19 @@ class TopicListActivity : AppCompatActivity(), OnRecyclerItemClickListener, Topi
     private lateinit var topicsDatabaseReference: DatabaseReference
     private lateinit var topicListener: ChildEventListener
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_topic_list)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_topic_list, null)
+    }
 
-        setSupportActionBar(toolbar)
-        toolbar.title = "Topics"
-
-        // Show the Up button in the action bar.
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
-        log.debug("onCreate:")
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         database = FirebaseDatabase.getInstance()
         topicsDatabaseReference = database.getReference(FIREBASE_TOPICS)
 
-
         fab.setOnClickListener {
-            //addNewTopicDialog()
-            addNewTopic()
+            log.debug("onClickListener: addNewTopic")
+            val action = TopicListFragmentDirections.actionTopicListFragmentToTopicAddFragment(topicList.size)
+            findNavController().navigate(action)
         }
 
         setupRecyclerView(topic_list)
@@ -125,66 +119,19 @@ class TopicListActivity : AppCompatActivity(), OnRecyclerItemClickListener, Topi
         topicListener = childEventListener
     }
 
-    override fun onBackPressed() {
-        log.debug("onBackPressed:")
-        super.onBackPressed()
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        log.debug("onOptionsItemSelected:")
-        return when (item.itemId) {
-            android.R.id.home -> {
-                NavUtils.navigateUpFromSameTask(this)
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
-
-    fun addNewTopicDialog() {
-        MaterialDialog(this)
-                .customView(R.layout.dialog_topic_add, scrollable = true)
-                .title(R.string.title_add_topic)
-                .positiveButton(R.string.button_ok) { dialog ->
-                    val customView = dialog.getCustomView()!!
-                    val inputTopicType: TextInputEditText = customView.findViewById(R.id.input_topic_type)
-                    val inputParentId: TextInputEditText = customView.findViewById(R.id.input_parent_id)
-                    val inputTitle: TextInputEditText = customView.findViewById(R.id.input_title)
-                    val inputContent: TextInputEditText = customView.findViewById(R.id.input_content)
-
-                    val newTopic = topicsDatabaseReference.push()
-                    val id = newTopic.key
-                    id?.let { nonNullId ->
-                        val topicType = inputTopicType.text.toString()
-                        val parentId = inputParentId.text.toString()
-                        val index = topicList.size
-                        val title = inputTitle.text.toString()
-                        val content = inputContent.text.toString()
-                        val topic = Topic(nonNullId, topicType, parentId, index, title, content)
-
-                        newTopic.setValue(topic)
-                        coordinator_layout_topic_list.snackbar(getString(R.string.message_topic_added, topic.title))
-                    }
-                }
-                .negativeButton(R.string.button_cancel) { _ ->
-                    // Do something
-                }
-                .show()
-
-    }
-
     private fun setupRecyclerView(recyclerView: androidx.recyclerview.widget.RecyclerView) {
         log.debug("setupRecyclerView: topicList.size=${topicList.size}")
         topicList.forEach { topic ->
             log.debug("setupRecyclerView: topic=${topic.title}")
         }
 
-        adapter = TopicListAdapter(this, this)
+        val context = recyclerView.context
+        adapter = TopicListAdapter(context, this)
         adapter.topicListener = this
-        recyclerView.addItemDecoration(androidx.recyclerview.widget.DividerItemDecoration(this, androidx.recyclerview.widget.DividerItemDecoration.VERTICAL))
+        recyclerView.addItemDecoration(androidx.recyclerview.widget.DividerItemDecoration(context, androidx.recyclerview.widget.DividerItemDecoration.VERTICAL))
         recyclerView.setHasFixedSize(true)
         recyclerView.adapter = adapter
-        recyclerView.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
+        recyclerView.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context)
 
         adapter.setItems(topicList)
         recyclerView.adapter = adapter
@@ -211,11 +158,8 @@ class TopicListActivity : AppCompatActivity(), OnRecyclerItemClickListener, Topi
     override fun onItemClick(position: Int) {
         val clickedTopic: Topic = adapter.getItem(position)
         log.debug("onItemClick: topic=${clickedTopic.title}")
-        val intent = Intent(this, TopicDetailActivity::class.java).apply {
-            putExtra(Topic.ARG_TOPIC, clickedTopic)
-        }
-        startActivity(intent)
-
+        val action = TopicListFragmentDirections.actionTopicListFragmentToTopicDetailFragment(clickedTopic)
+        findNavController().navigate(action)
     }
 
     override fun onItemDeleted(topic: Topic) {
@@ -242,15 +186,7 @@ class TopicListActivity : AppCompatActivity(), OnRecyclerItemClickListener, Topi
         }
     }
 
-    fun addNewTopic() {
-        log.debug("addNewTopic")
-        val intent = Intent(this, TopicAddActivity::class.java).apply {
-            putExtra(Topic.ARG_TOPIC_COUNT, topicList.size)
-        }
-        startActivity(intent)
-    }
-
     companion object {
-        private val log = LoggerFactory.getLogger(TopicListActivity::class.java)
+        private val log = LoggerFactory.getLogger(TopicListFragment::class.java)
     }
 }

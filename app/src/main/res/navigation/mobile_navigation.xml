@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/mainFragment">
+
+    <fragment
+        android:id="@+id/mainFragment"
+        android:name="ie.koala.topics.fragment.MainFragment"
+        android:label="@string/label_main"
+        tools:layout="@layout/fragment_main">
+
+        <action
+            android:id="@+id/action_topic_list"
+            app:destination="@id/topicListFragment" />
+        <action
+            android:id="@+id/action_wiki"
+            app:destination="@id/wikiFragment" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/topicListFragment"
+        android:name="ie.koala.topics.feature.topic.TopicListFragment"
+        android:label="@string/label_topic_list"
+        tools:layout="@layout/fragment_topic_list">
+
+        <deepLink
+            android:id="@+id/topicListDeepLink"
+            app:uri="topicsapp://topics" />
+        <action
+            android:id="@+id/action_topicListFragment_to_topicAddFragment"
+            app:destination="@id/topicAddFragment" />
+        <action
+            android:id="@+id/action_topicListFragment_to_topicDetailFragment"
+            app:destination="@id/topicDetailFragment" />
+
+    </fragment>
+    <fragment
+        android:id="@+id/topicEditFragment"
+        android:name="ie.koala.topics.feature.topic.TopicEditFragment"
+        android:label="@string/label_topic_edit"
+        tools:layout="@layout/fragment_topic_edit">
+        <argument
+            android:name="topic"
+            app:argType="ie.koala.topics.model.Topic" />
+    </fragment>
+    <fragment
+        android:id="@+id/wikiFragment"
+        android:name="ie.koala.topics.fragment.WikiFragment"
+        android:label="WikiFragment" >
+        <argument
+            android:name="wiki"
+            app:argType="ie.koala.topics.model.Wiki" />
+    </fragment>
+    <fragment
+        android:id="@+id/topicAddFragment"
+        android:name="ie.koala.topics.feature.topic.TopicAddFragment"
+        android:label="fragment_topic_add"
+        tools:layout="@layout/fragment_topic_add" >
+        <argument
+            android:name="topicCount"
+            app:argType="integer" />
+    </fragment>
+    <fragment
+        android:id="@+id/topicDetailFragment"
+        android:name="ie.koala.topics.feature.topic.TopicDetailFragment"
+        android:label="fragment_topic_detail"
+        tools:layout="@layout/fragment_topic_detail" >
+        <action
+            android:id="@+id/action_topicDetailFragment_to_topicEditFragment"
+            app:destination="@id/topicEditFragment" />
+        <argument
+            android:name="topic"
+            app:argType="ie.koala.topics.model.Topic" />
+    </fragment>
+
+</navigation>

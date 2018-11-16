@@ -13,35 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ie.koala.topics.app
+package ie.koala.topics.activity
 
 import android.app.SearchManager
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
-import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.SearchView
-import androidx.core.view.GravityCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import ie.koala.topics.inject.Injection
 import ie.koala.topics.R
-import ie.koala.topics.app.WikiActivity.Companion.ARG_WIKI
+import ie.koala.topics.inject.Injection
 import ie.koala.topics.model.Topic
-import ie.koala.topics.preferences.PreferenceHelper.defaultPrefs
-import ie.koala.topics.preferences.PreferenceKeys.NAV_MODE_NORMAL
-import ie.koala.topics.preferences.PreferencesActivity
 import ie.koala.topics.ui.TopicsAdapter
-import ie.koala.topics.model.Wiki
 import ie.koala.topics.viewmodel.TopicViewModel
 import kotlinx.android.synthetic.main.activity_topics.*
-import org.jetbrains.anko.startActivity
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 

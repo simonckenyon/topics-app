@@ -1,0 +1,8 @@
+<androidx.preference.PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <SwitchPreferenceCompat
+        app:fragment="ie.koala.topics.preferences.NotificationsSettingsFragment"
+        app:key="notifications"
+        app:title="Enable message notifications" />
+
+</androidx.preference.PreferenceScreen>
