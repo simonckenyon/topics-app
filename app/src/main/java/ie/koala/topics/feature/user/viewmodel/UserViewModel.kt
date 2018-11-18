@@ -1,4 +1,4 @@
-package ie.koala.topics.feature.user
+package ie.koala.topics.feature.user.viewmodel
 
 import androidx.annotation.NonNull
 import androidx.lifecycle.LiveData
@@ -6,6 +6,7 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.FirebaseDatabase
+import ie.koala.topics.feature.user.model.User
 import ie.koala.topics.firebase.FirebaseQueryLiveData
 
 class UserViewModel : ViewModel() {

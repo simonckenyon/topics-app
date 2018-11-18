@@ -35,9 +35,11 @@ class KoinInitContentProvider : ContentProvider() {
     }
 
     override fun onCreate(): Boolean {
-        startKoin(context, allModules)
-        val config = SingletonRuntimeConfig.instance
-        log.debug("onCreate: stockRepository=${config.stockRepository.javaClass.canonicalName}")
+        context?.let { nonNullContext ->
+            startKoin(nonNullContext, allModules)
+            val config = SingletonRuntimeConfig.instance
+            //log.debug("onCreate: stockRepository=${config.stockRepository.javaClass.canonicalName}")
+        }
         return true
     }
 

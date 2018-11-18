@@ -1,23 +1,27 @@
 package ie.koala.topics.contacts
 
+import android.app.Activity
+import android.content.Context
 import android.database.Cursor
 import android.os.Bundle
 import android.provider.ContactsContract
 import androidx.appcompat.app.AppCompatActivity
 import androidx.loader.app.LoaderManager
 import android.widget.ArrayAdapter
-import ie.koala.topics.auth.SignUpActivity
+import ie.koala.topics.feature.auth.fragment.SignUpFragment
 import org.slf4j.LoggerFactory
 import java.util.ArrayList
+import androidx.fragment.app.Fragment
+import ie.koala.topics.activity.MainActivity
 
-abstract class ContactLoaderActivity: AppCompatActivity(), LoaderManager.LoaderCallbacks<Cursor> {
 
+abstract class ContactLoaderFragment: Fragment(), LoaderManager.LoaderCallbacks<Cursor> {
 
     var adapter: ArrayAdapter<String>? = null
 
     companion object {
         const val LOADER_ID = 1
-        private val log = LoggerFactory.getLogger(SignUpActivity::class.java)
+        private val log = LoggerFactory.getLogger(ContactLoaderFragment::class.java)
     }
 
     private interface ProfileQuery {
@@ -38,17 +42,19 @@ abstract class ContactLoaderActivity: AppCompatActivity(), LoaderManager.LoaderC
     override fun onCreateLoader(i: Int, bundle: Bundle?): androidx.loader.content.Loader<Cursor> {
         log.debug("onCreateLoader")
 
-        return androidx.loader.content.CursorLoader(this,
-                // Retrieve data rows for the device user's 'profile' contact.
-                ContactsContract.Data.CONTENT_URI, ProfileQuery.PROJECTION,
+        context?.let { nonNullContext: Context ->
+            return androidx.loader.content.CursorLoader(nonNullContext,
+                    // Retrieve data rows for the device user's 'profile' contact.
+                    ContactsContract.Data.CONTENT_URI, ProfileQuery.PROJECTION,
 
-                // Select only email addresses.
-                ContactsContract.Contacts.Data.MIMETYPE + " = ?", arrayOf(ContactsContract.CommonDataKinds.Email
-                .CONTENT_ITEM_TYPE),
+                    // Select only email addresses.
+                    ContactsContract.Contacts.Data.MIMETYPE + " = ?", arrayOf(ContactsContract.CommonDataKinds.Email
+                    .CONTENT_ITEM_TYPE),
 
-                // Show primary email addresses first. Note that there won't be
-                // a primary email address if the user hasn't specified one.
-                ContactsContract.Contacts.Data.IS_PRIMARY + " DESC")
+                    // Show primary email addresses first. Note that there won't be
+                    // a primary email address if the user hasn't specified one.
+                    ContactsContract.Contacts.Data.IS_PRIMARY + " DESC")
+        }
     }
 
     override fun onLoadFinished(loader: androidx.loader.content.Loader<Cursor>, cursor: Cursor) {

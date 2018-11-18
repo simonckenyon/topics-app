@@ -1,4 +1,4 @@
-package ie.koala.topics.feature.user
+package ie.koala.topics.feature.user.model
 
 class User {
     var ticker: String? = null

@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import ie.koala.topics.R
+import ie.koala.topics.model.Wiki
+import ie.koala.topics.ui.TopicActivity
 import ie.koala.topics.web.ViewClient
 import kotlinx.android.synthetic.main.fragment_wiki.*
 import org.slf4j.LoggerFactory
@@ -19,19 +21,25 @@ class WikiFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        val w = WikiFragmentArgs.fromBundle(arguments).wiki
-        log.debug("onViewCreated: w=$w")
+        val w = arguments?.getParcelable<Wiki>("wiki")
+        if (w != null) {
+            //log.debug("onViewCreated: w=$w")
 
-        val url = "assets://wiki/" + w.url + ".wiki"
+            val url = "assets://wiki/" + w.url + ".wiki"
 
-        try {
-            toolbar_layout.title = w.title
+            try {
+                //toolbar_layout.title = w.title
+                val topicActivity: TopicActivity? = activity as TopicActivity
+                if (topicActivity != null) {
+                    topicActivity.updateTitle(w.title)
 
-            wiki.webViewClient = ViewClient(null)
-            wiki.loadUrl(url)
-        } catch (e: Exception) {
-            log.debug("onViewCreated: exception ", e)
-            wiki.loadData("Unable to show wiki page", "text/html", "")
+                    wiki.webViewClient = ViewClient(null)
+                    wiki.loadUrl(url)
+                }
+            } catch (e: Exception) {
+                log.error("onViewCreated: exception ", e)
+                wiki.loadData("Unable to show wiki page", "text/html", "")
+            }
         }
     }
 

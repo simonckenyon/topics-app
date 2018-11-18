@@ -1,4 +1,4 @@
-package ie.koala.topics.feature.topic
+package ie.koala.topics.feature.topic.firebase
 
 object TopicReference {
     @JvmStatic

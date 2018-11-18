@@ -1,4 +1,4 @@
-package ie.koala.topics.feature.topic
+package ie.koala.topics.feature.topic.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,11 +12,10 @@ import com.google.firebase.database.*
 import ie.koala.topics.R
 import ie.koala.topics.adapter.ItemTouchHelperCallback
 import ie.koala.topics.adapter.OnRecyclerItemClickListener
-import ie.koala.topics.feature.topic.TopicReference.FIREBASE_TOPICS
-import ie.koala.topics.feature.topic.TopicListFragmentDirections
+import ie.koala.topics.feature.topic.firebase.TopicReference.FIREBASE_TOPICS
 import ie.koala.topics.model.Topic
-import ie.koala.topics.ui.TopicListAdapter
-import ie.koala.topics.ui.TopicListener
+import ie.koala.topics.feature.topic.adapter.TopicListAdapter
+import ie.koala.topics.feature.topic.adapter.TopicListener
 import ie.koala.topics.ui.snackbar
 import kotlinx.android.synthetic.main.fragment_topic_list.*
 import org.slf4j.LoggerFactory

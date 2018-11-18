@@ -8,22 +8,13 @@
     <fragment
         android:id="@+id/mainFragment"
         android:name="ie.koala.topics.fragment.MainFragment"
-        android:label="@string/label_main"
-        tools:layout="@layout/fragment_main">
-
-        <action
-            android:id="@+id/action_topic_list"
-            app:destination="@id/topicListFragment" />
-        <action
-            android:id="@+id/action_wiki"
-            app:destination="@id/wikiFragment" />
-
-    </fragment>
+        android:label="@string/label_koala_topics"
+        tools:layout="@layout/fragment_main" />
 
     <fragment
         android:id="@+id/topicListFragment"
-        android:name="ie.koala.topics.feature.topic.TopicListFragment"
-        android:label="@string/label_topic_list"
+        android:name="ie.koala.topics.feature.topic.fragment.TopicListFragment"
+        android:label="@string/label_topics"
         tools:layout="@layout/fragment_topic_list">
 
         <deepLink
@@ -39,7 +30,7 @@
     </fragment>
     <fragment
         android:id="@+id/topicEditFragment"
-        android:name="ie.koala.topics.feature.topic.TopicEditFragment"
+        android:name="ie.koala.topics.feature.topic.fragment.TopicEditFragment"
         android:label="@string/label_topic_edit"
         tools:layout="@layout/fragment_topic_edit">
         <argument
@@ -49,25 +40,25 @@
     <fragment
         android:id="@+id/wikiFragment"
         android:name="ie.koala.topics.fragment.WikiFragment"
-        android:label="WikiFragment" >
+        android:label="WikiFragment">
         <argument
             android:name="wiki"
             app:argType="ie.koala.topics.model.Wiki" />
     </fragment>
     <fragment
         android:id="@+id/topicAddFragment"
-        android:name="ie.koala.topics.feature.topic.TopicAddFragment"
-        android:label="fragment_topic_add"
-        tools:layout="@layout/fragment_topic_add" >
+        android:name="ie.koala.topics.feature.topic.fragment.TopicAddFragment"
+        android:label="@string/label_topic_add"
+        tools:layout="@layout/fragment_topic_add">
         <argument
             android:name="topicCount"
             app:argType="integer" />
     </fragment>
     <fragment
         android:id="@+id/topicDetailFragment"
-        android:name="ie.koala.topics.feature.topic.TopicDetailFragment"
-        android:label="fragment_topic_detail"
-        tools:layout="@layout/fragment_topic_detail" >
+        android:name="ie.koala.topics.feature.topic.fragment.TopicDetailFragment"
+        android:label="@string/label_topic_details"
+        tools:layout="@layout/fragment_topic_detail">
         <action
             android:id="@+id/action_topicDetailFragment_to_topicEditFragment"
             app:destination="@id/topicEditFragment" />
@@ -75,5 +66,55 @@
             android:name="topic"
             app:argType="ie.koala.topics.model.Topic" />
     </fragment>
+    <fragment
+        android:id="@+id/userFragment"
+        android:name="ie.koala.topics.feature.user.fragment.UserFragment"
+        android:label="@string/label_user"
+        tools:layout="@layout/fragment_user" />
+    <fragment
+        android:id="@+id/signInFragment"
+        android:name="ie.koala.topics.feature.auth.fragment.SignInFragment"
+        android:label="@string/label_sign_in"
+        tools:layout="@layout/fragment_sign_in">
+        <action
+            android:id="@+id/action_signInFragment_to_signUpFragment"
+            app:destination="@id/signUpFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim" />
+        <action
+            android:id="@+id/action_signInFragment_to_resetPasswordFragment"
+            app:destination="@id/resetPasswordFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim" />
+    </fragment>
+    <fragment
+        android:id="@+id/signUpFragment"
+        android:name="ie.koala.topics.feature.auth.fragment.SignUpFragment"
+        android:label="@string/label_sign_up"
+        tools:layout="@layout/fragment_sign_up">
+        <action
+            android:id="@+id/action_signUpFragment_to_signInFragment"
+            app:destination="@id/signInFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim" />
+    </fragment>
+    <fragment
+        android:id="@+id/resetPasswordFragment"
+        android:name="ie.koala.topics.feature.auth.fragment.ResetPasswordFragment"
+        android:label="@string/label_reset_password"
+        tools:layout="@layout/fragment_reset_password" />
+
+    <action
+        android:id="@+id/action_global_topicListFragment"
+        app:destination="@id/topicListFragment" />
+    <action
+        android:id="@+id/action_global_wikiFragment"
+        app:destination="@id/wikiFragment" />
+    <action
+        android:id="@+id/action_global_userFragment"
+        app:destination="@id/userFragment" />
+    <action
+        android:id="@+id/action_global_signInFragment"
+        app:destination="@id/signInFragment" />
 
 </navigation>

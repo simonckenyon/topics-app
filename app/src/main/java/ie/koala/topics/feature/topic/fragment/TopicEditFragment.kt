@@ -1,4 +1,4 @@
-package ie.koala.topics.feature.topic
+package ie.koala.topics.feature.topic.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,19 +9,19 @@ import androidx.navigation.fragment.findNavController
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import ie.koala.topics.R
-import ie.koala.topics.feature.topic.TopicReference.FIREBASE_TOPICS
-import ie.koala.topics.feature.topic.TopicAddFragmentArgs
+import ie.koala.topics.feature.topic.firebase.TopicReference.FIREBASE_TOPICS
 import ie.koala.topics.model.Topic
 import kotlinx.android.synthetic.main.fragment_topic_edit.*
 import org.slf4j.LoggerFactory
 
-class TopicAddFragment : Fragment() {
+class TopicEditFragment : Fragment() {
 
     private lateinit var database: FirebaseDatabase
     private lateinit var topicsDatabaseReference: DatabaseReference
+    private lateinit var topic: Topic
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_topic_add, null)
+        return inflater.inflate(R.layout.fragment_topic_edit, null)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -29,30 +29,24 @@ class TopicAddFragment : Fragment() {
         database = FirebaseDatabase.getInstance()
         topicsDatabaseReference = database.getReference(FIREBASE_TOPICS)
 
-        val topicCount = TopicAddFragmentArgs.fromBundle(arguments).topicCount
-        log.debug("onCreate: topicCount=$topicCount")
+        topic = TopicEditFragmentArgs.fromBundle(arguments).topic
+        log.debug("onCreate: topic=$topic")
+        input_title.setText(topic.title)
+        input_content.setText(topic.content)
         btn_save.setOnClickListener {
-            topicAdded(topicCount)
+            topicUpdated()
             findNavController().popBackStack()
         }
     }
 
-    private fun topicAdded(topicCount: Int) {
-        val newTopic = topicsDatabaseReference.push()
-        val id = newTopic.key
-        id?.let { nonNullId ->
-            val index = topicCount + 1
-            val topicType = "TOPIC"
-            val parentId = 111
-            val title = input_title.text.toString()
-            val content = input_content.text.toString()
-            val topic = Topic(nonNullId, index.toString(), topicType, parentId, title, content)
-
-            newTopic.setValue(topic)
-        }
+    private fun topicUpdated() {
+        topic.title = input_title.text.toString()
+        topic.content = input_content.text.toString()
+        topicsDatabaseReference.child(topic.id).child("title").setValue(topic.title)
+        topicsDatabaseReference.child(topic.id).child("content").setValue(topic.content)
     }
 
     companion object {
-        private val log = LoggerFactory.getLogger(TopicDetailFragment::class.java)
+        private val log = LoggerFactory.getLogger(TopicEditFragment::class.java)
     }
 }

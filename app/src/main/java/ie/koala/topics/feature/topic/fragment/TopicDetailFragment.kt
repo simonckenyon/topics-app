@@ -1,4 +1,4 @@
-package ie.koala.topics.feature.topic
+package ie.koala.topics.feature.topic.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,8 +9,6 @@ import androidx.navigation.fragment.findNavController
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import ie.koala.topics.R
-import ie.koala.topics.feature.topic.TopicDetailFragmentArgs
-import ie.koala.topics.feature.topic.TopicDetailFragmentDirections
 import ie.koala.topics.model.Topic
 import ie.koala.topics.web.AppWikiModel
 import ie.koala.topics.web.ViewClient

@@ -6,7 +6,7 @@
     android:id="@+id/coordinator_layout_topic_list"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".feature.topic.TopicListFragment">
+    tools:context=".feature.topic.fragment.TopicListFragment">
 
     <FrameLayout
         android:id="@+id/frameLayout"
@@ -22,7 +22,7 @@
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:context=".feature.topic.TopicListFragment"
+            tools:context=".feature.topic.fragment.TopicListFragment"
             tools:listitem="@layout/topic_list_content" />
     </FrameLayout>
 

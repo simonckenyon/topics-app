@@ -36,45 +36,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".feature.user.UserActivity"
-            android:label="@string/activity_users"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustResize">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.MainActivity" />
-        </activity>
-        <activity
-            android:name=".auth.SignInActivity"
-            android:label="@string/title_activity_sign_in"
-            android:parentActivityName=".activity.MainActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustResize">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.MainActivity" />
-        </activity>
-        <activity
-            android:name=".auth.SignUpActivity"
-            android:label="@string/title_activity_sign_up"
-            android:parentActivityName=".activity.MainActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustResize">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.MainActivity" />
-        </activity>
-        <activity
-            android:name=".auth.ResetPasswordActivity"
-            android:label="@string/title_activity_reset_password"
-            android:parentActivityName=".activity.MainActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustResize">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.MainActivity" />
-        </activity>
-        <activity
             android:name=".preferences.PreferencesActivity"
             android:label="@string/title_activity_settings"
             android:parentActivityName=".activity.MainActivity"
@@ -83,29 +44,6 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="ie.koala.topics.activity.MainActivity" />
-        </activity>
-        <activity
-            android:name=".auth.AuthActivity"
-            android:label="@string/title_activity_auth"
-            android:parentActivityName=".activity.MainActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="ie.koala.topics.activity.MainActivity" />
-
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".activity.DetailActivity"
-            android:parentActivityName=".activity.MainActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustResize">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.MainActivity" />
         </activity>
     </application>
 

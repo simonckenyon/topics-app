@@ -1,32 +1,35 @@
-package ie.koala.topics.auth
+package ie.koala.topics.feature.auth.fragment
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import androidx.navigation.fragment.findNavController
 import com.google.firebase.auth.FirebaseAuth
 import ie.koala.topics.R
-import ie.koala.topics.contacts.ContactLoaderActivity
+import ie.koala.topics.contacts.ContactLoaderFragment
 import ie.koala.topics.contacts.ContactReadPermission
 import ie.koala.topics.ui.snackbar
-import kotlinx.android.synthetic.main.activity_sign_in.*
+import kotlinx.android.synthetic.main.fragment_sign_in.*
 import org.slf4j.LoggerFactory
 
-class SignInActivity : ContactLoaderActivity() {
+class SignInFragment : ContactLoaderFragment() {
 
-    private val log = LoggerFactory.getLogger(SignInActivity::class.java)
+    private val log = LoggerFactory.getLogger(SignInFragment::class.java)
 
     private var auth: FirebaseAuth? = null
 
-    public override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_sign_in)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_sign_in, null)
+    }
 
-        setSupportActionBar(toolbar)
-        toolbar.title = "Sign In"
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         auth = FirebaseAuth.getInstance()
 
@@ -34,7 +37,7 @@ class SignInActivity : ContactLoaderActivity() {
 
         input_email.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
-                log.debug("afterTextChanged s=${s}")
+                //log.debug("afterTextChanged s=${s}")
                 adapter?.run {
                     notifyDataSetChanged()
                 }
@@ -50,34 +53,16 @@ class SignInActivity : ContactLoaderActivity() {
         btn_sign_in.setOnClickListener { login() }
 
         btn_sign_up.setOnClickListener {
-            val intent = Intent(applicationContext, SignUpActivity::class.java)
-            startActivityForResult(intent, REQUEST_SIGN_UP)
-            finish()
-            overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out)
+            //val intent = Intent(applicationContext, SignUpFragment::class.java)
+            //startActivityForResult(intent, REQUEST_SIGN_UP)
+            findNavController().popBackStack()
         }
 
         btn_forgot_password.setOnClickListener {
-            val intent = Intent(applicationContext, ResetPasswordActivity::class.java)
-            startActivityForResult(intent, REQUEST_FORGOT_PASSWORD)
-            finish()
-            overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out)
+            //val intent = Intent(applicationContext, ResetPasswordFragment::class.java)
+            //startActivityForResult(intent, REQUEST_FORGOT_PASSWORD)
+            findNavController().popBackStack()
         }
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == REQUEST_SIGN_UP) {
-            if (resultCode == Activity.RESULT_OK) {
-                // a successful signup logs the user in
-                // so no need to do anything more
-                this.finish()
-            }
-        }
-    }
-
-    override fun onBackPressed() {
-        // Disable going back to the MainActivity
-        moveTaskToBack(true)
     }
 
     /**
@@ -86,13 +71,16 @@ class SignInActivity : ContactLoaderActivity() {
      * @param emailAddressCollection
      */
     override fun addEmailsToAutoComplete(emailAddressCollection: List<String>) {
-        log.debug("addEmailsToAutoComplete: email count=" + emailAddressCollection.size)
-        adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, emailAddressCollection)
-        input_email.setAdapter(adapter)
+        //log.debug("addEmailsToAutoComplete: email count=" + emailAddressCollection.size)
+
+        context?.let { nonNullContext ->
+            adapter = ArrayAdapter(nonNullContext, android.R.layout.simple_dropdown_item_1line, emailAddressCollection)
+            input_email.setAdapter(adapter)
+        }
     }
 
     private fun login() {
-        log.debug("login:")
+        //log.debug("login:")
 
         if (!validate()) {
             btn_sign_in.isEnabled = true
@@ -140,7 +128,7 @@ class SignInActivity : ContactLoaderActivity() {
     }
 
     private fun signIn(email: String, password: String) {
-        log.debug("signIn: $email")
+        //log.debug("signIn: $email")
 
         if (!validate()) {
             btn_sign_in.isEnabled = true
@@ -150,19 +138,22 @@ class SignInActivity : ContactLoaderActivity() {
 
         progress_bar.visibility = View.VISIBLE
 
-        auth!!.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this) { task ->
-                    progress_bar.visibility = View.INVISIBLE
-                    if (task.isSuccessful) {
-                        log.debug( "signIn: success")
-                        btn_sign_in.isEnabled = true
-                        finish()
-                    } else {
-                        log.debug( "signIn: failed", task.exception)
-                        btn_sign_in.isEnabled = true
-                        coordinator_layout_sign_in.snackbar(R.string.message_login_failed)
+        activity?.let { nonNullActivity ->
+            auth!!
+                    .signInWithEmailAndPassword(email, password)
+                    .addOnCompleteListener(nonNullActivity) { task ->
+                        progress_bar.visibility = View.INVISIBLE
+                        if (task.isSuccessful) {
+                            //log.debug("signIn: success")
+                            btn_sign_in.isEnabled = true
+                            findNavController().popBackStack()
+                        } else {
+                            //log.debug("signIn: failed", task.exception)
+                            btn_sign_in.isEnabled = true
+                            coordinator_layout_sign_in.snackbar(R.string.message_login_failed)
+                        }
                     }
-                }
+        }
     }
 
     companion object {

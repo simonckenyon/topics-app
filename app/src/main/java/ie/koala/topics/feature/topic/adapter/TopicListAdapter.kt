@@ -1,4 +1,4 @@
-package ie.koala.topics.ui
+package ie.koala.topics.feature.topic.adapter
 
 import android.content.Context
 import android.view.ViewGroup

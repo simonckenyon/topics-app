@@ -1,34 +1,36 @@
-package ie.koala.topics.auth
+package ie.koala.topics.feature.auth.fragment
 
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.ArrayAdapter
+import androidx.navigation.fragment.findNavController
 import com.google.firebase.auth.FirebaseAuth
 import ie.koala.topics.R
-import ie.koala.topics.contacts.ContactLoaderActivity
+import ie.koala.topics.contacts.ContactLoaderFragment
 import ie.koala.topics.contacts.ContactReadPermission
 import ie.koala.topics.ui.snackbar
-import kotlinx.android.synthetic.main.activity_sign_up.*
+import kotlinx.android.synthetic.main.fragment_sign_up.*
 import org.slf4j.LoggerFactory
 
 
-class SignUpActivity : ContactLoaderActivity() {
+class SignUpFragment : ContactLoaderFragment() {
 
     private var auth: FirebaseAuth? = null
 
-    private val log = LoggerFactory.getLogger(SignUpActivity::class.java)
+    private val log = LoggerFactory.getLogger(SignUpFragment::class.java)
 
-    public override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_sign_up)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_sign_up, null)
+    }
 
-        setSupportActionBar(toolbar)
-        toolbar.title = "Sign Up"
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         auth = FirebaseAuth.getInstance()
 
@@ -36,7 +38,7 @@ class SignUpActivity : ContactLoaderActivity() {
 
         input_email.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
-                log.debug("afterTextChanged s=${s}")
+                //log.debug("afterTextChanged s=${s}")
                 adapter?.run {
                     notifyDataSetChanged()
                 }
@@ -52,7 +54,6 @@ class SignUpActivity : ContactLoaderActivity() {
         btn_sign_up.setOnClickListener { signup() }
 
         btn_sign_in.setOnClickListener { signin() }
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         input_reEnterPassword.setOnEditorActionListener { _, actionId, _ ->
             when (actionId) {
@@ -68,11 +69,12 @@ class SignUpActivity : ContactLoaderActivity() {
      * @param emailAddressCollection
      */
     override fun addEmailsToAutoComplete(emailAddressCollection: List<String>) {
-        log.debug("addEmailsToAutoComplete: email count=" + emailAddressCollection.size)
+        //log.debug("addEmailsToAutoComplete: email count=" + emailAddressCollection.size)
 
-        adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, emailAddressCollection)
-
-        input_email.setAdapter(adapter)
+        context?.let { nonNullContext ->
+            adapter = ArrayAdapter(nonNullContext, android.R.layout.simple_dropdown_item_1line, emailAddressCollection)
+            input_email.setAdapter(adapter)
+        }
     }
 
     /**
@@ -80,17 +82,16 @@ class SignUpActivity : ContactLoaderActivity() {
      */
     private fun signin(): Boolean {
 
-        log.debug("signin")
+        //log.debug("signin")
 
-        val intent = Intent(applicationContext, SignInActivity::class.java)
-        startActivity(intent)
-        finish()
-        overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out)
+        //val intent = Intent(applicationContext, SignInFragment::class.java)
+        //startActivity(intent)
+        findNavController().popBackStack()
         return true
     }
 
     private fun signup(): Boolean {
-        log.debug("signup")
+        //log.debug("signup")
 
         return if (!validate()) {
             btn_sign_up.isEnabled = true
@@ -135,27 +136,29 @@ class SignUpActivity : ContactLoaderActivity() {
     }
 
     private fun createAccount(email: String, password: String): Boolean {
-        log.debug("createAccount: $email")
+        //log.debug("createAccount: $email")
 
         return if (!validate()) {
             false
         } else {
             progress_bar.visibility = View.VISIBLE
-            auth!!
-                    .createUserWithEmailAndPassword(email, password)
-                    .addOnCompleteListener(this) { task ->
-                        progress_bar.visibility = View.INVISIBLE
-                        btn_sign_up.isEnabled = true
-                        if (task.isSuccessful) {
-                            log.debug("createAccount: success")
-                            setResult(Activity.RESULT_OK, null)
-                            finish()
-                        } else {
-                            val message = task.exception?.message ?: "Authentication failed"
-                            log.debug("createAccount: failed (${message})")
-                            coordinator_layout_sign_up.snackbar(message)
+
+            activity?.let { nonNullActivity ->
+                auth!!
+                        .createUserWithEmailAndPassword(email, password)
+                        .addOnCompleteListener(nonNullActivity) { task ->
+                            progress_bar.visibility = View.INVISIBLE
+                            btn_sign_up.isEnabled = true
+                            if (task.isSuccessful) {
+                                //log.debug("createAccount: success")
+                                findNavController().popBackStack()
+                            } else {
+                                val message = task.exception?.message ?: "Authentication failed"
+                                //log.debug("createAccount: failed (${message})")
+                                coordinator_layout_sign_up.snackbar(message)
+                            }
                         }
-                    }
+            }
             true
         }
     }

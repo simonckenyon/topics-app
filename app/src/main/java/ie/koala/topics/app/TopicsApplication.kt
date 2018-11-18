@@ -3,6 +3,7 @@ package ie.koala.topics.app
 import android.app.Application
 //import com.google.firebase.database.FirebaseDatabase
 import ie.koala.topics.BuildConfig
+import org.koin.android.ext.android.startKoin
 
 open class TopicsApplication : Application() {
 //

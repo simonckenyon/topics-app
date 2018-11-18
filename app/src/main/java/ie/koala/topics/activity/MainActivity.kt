@@ -18,19 +18,17 @@ import com.hendraanggrian.pikasso.picasso
 import com.hendraanggrian.pikasso.transformations.circle
 import fr.tkeunebr.gravatar.Gravatar
 import ie.koala.topics.R
-import ie.koala.topics.auth.SignInActivity
-import ie.koala.topics.auth.SignUpActivity
-import ie.koala.topics.feature.user.UserActivity
-import ie.koala.topics.fragment.MainFragmentDirections
 import ie.koala.topics.model.Wiki
 import ie.koala.topics.preferences.PreferencesActivity
+import ie.koala.topics.ui.TopicActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.nav_header_main.view.*
+import org.jetbrains.anko.bundleOf
 import org.jetbrains.anko.startActivity
 import org.slf4j.LoggerFactory
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), TopicActivity {
 
     enum class MenuState { APP, ACCOUNT_SWITCHER }
 
@@ -57,7 +55,7 @@ class MainActivity : AppCompatActivity() {
         drawer_layout.addDrawerListener(toggle)
         toggle.syncState()
 
-        log.debug("onCreate:")
+        //log.debug("onCreate:")
         Log.d("MainActivity", "in onCreate")
         updateNavigationMenu()
         setupNavigation()
@@ -96,12 +94,12 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        log.debug("onStart:")
+        //log.debug("onStart:")
 
         val navController = findNavController(this, R.id.container)
 
         if (checkCurrentDestination && navController.currentDestination == null) {
-            log.debug("onStart: currentDestination is null")
+            //log.debug("onStart: currentDestination is null")
             navController.navigate(navController.graph.startDestination)
         }
 
@@ -110,7 +108,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStop() {
         super.onStop()
-        log.debug("onStop:")
+        //log.debug("onStop:")
         checkCurrentDestination = true
     }
     /*
@@ -149,6 +147,10 @@ class MainActivity : AppCompatActivity() {
         navigationDrawerMenuState = savedInstanceState?.getSerializable("navigationDrawerMenuState") as MenuState
     }
 
+    override fun updateTitle(title: String) {
+        toolbar?.title = title
+    }
+
     private inline fun consume(f: () -> Unit): Boolean {
         f()
         return true
@@ -164,9 +166,9 @@ class MainActivity : AppCompatActivity() {
         //setupWithNavController(nav_view, navController)
 
         // Handle nav drawer item clicks
-        log.debug("setupNavigation: register listener")
+        //log.debug("setupNavigation: register listener")
         nav_view.setNavigationItemSelectedListener { menuItem ->
-            log.debug("onNavigationItemSelected: menuItem=$menuItem")
+            //log.debug("onNavigationItemSelected: menuItem=$menuItem")
             // set item as selected to persist highlight
             //menuItem.isChecked = true
             // close menu_drawer when item is tapped
@@ -174,20 +176,19 @@ class MainActivity : AppCompatActivity() {
 
             when (menuItem.itemId) {
                 R.id.nav_topics -> {
-                    val action = MainFragmentDirections.actionTopicList()
-                    findNavController(this, R.id.container).navigate(action)
+                    findNavController(this, R.id.container).navigate(R.id.action_global_topicListFragment)
                     true
                 }
                 R.id.nav_user -> {
-                    startActivity<UserActivity>()
+                    findNavController(this, R.id.container).navigate(R.id.action_global_userFragment)
                     true
                 }
                 R.id.nav_sign_in -> {
-                    startActivity<SignInActivity>()
+                    //startActivity<SignInFragment>()
                     true
                 }
                 R.id.nav_sign_up -> {
-                    startActivity<SignUpActivity>()
+                    //startActivity<SignUpFragment>()
                     true
                 }
                 R.id.menu_sign_out -> {
@@ -200,15 +201,15 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
                 R.id.nav_copyright -> {
-                    val wiki = Wiki("Copyright Statement", "copyright")
-                    val action = MainFragmentDirections.actionWiki(wiki)
-                    findNavController(this, R.id.container).navigate(action)
+                    val wiki = Wiki(getString(R.string.title_copyright_statement), "copyright")
+                    var bundle = bundleOf("wiki" to wiki)
+                    findNavController(this, R.id.container).navigate(R.id.action_global_wikiFragment, bundle)
                     true
                 }
                 R.id.nav_about -> {
-                    val wiki = Wiki("About this app", "about")
-                    val action = MainFragmentDirections.actionWiki(wiki)
-                    findNavController(this, R.id.container).navigate(action)
+                    val wiki = Wiki(getString(R.string.title_about_this_app), "about")
+                    var bundle = bundleOf("wiki" to wiki)
+                    findNavController(this, R.id.container).navigate(R.id.action_global_wikiFragment, bundle)
                     true
                 }
                 else -> false
@@ -224,22 +225,22 @@ class MainActivity : AppCompatActivity() {
         if (auth != null && auth?.currentUser != null) {
             // signed in
             val user = auth!!.currentUser
-            log.debug("email=${user?.email}")
+            //log.debug("email=${user?.email}")
             val gravatarUrl = Gravatar.init().with(user?.email).defaultImage(4).size(Gravatar.MAX_IMAGE_SIZE_PIXEL).build()
-            log.debug("gravatarUrl=$gravatarUrl")
+            //log.debug("gravatarUrl=$gravatarUrl")
 
             picasso.load(gravatarUrl).circle().into(headerView.avatar)
 
             emailAddress.text = user?.email
 
             if (navigationDrawerMenuState == MenuState.ACCOUNT_SWITCHER) {
-                log.debug("updateNavigationMenu: set sign out menu visible")
+                //log.debug("updateNavigationMenu: set sign out menu visible")
                 emailAddress.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_arrow_drop_up, 0)
                 menu.setGroupVisible(R.id.menu_sign_in, false)
                 menu.setGroupVisible(R.id.menu_sign_out, true)
                 menu.setGroupVisible(R.id.menu_authenticated, false)
             } else {
-                log.debug("updateNavigationMenu: set authenticated menu visible")
+                //log.debug("updateNavigationMenu: set authenticated menu visible")
                 emailAddress.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_arrow_drop_down, 0)
                 menu.setGroupVisible(R.id.menu_sign_in, false)
                 menu.setGroupVisible(R.id.menu_sign_out, false)
@@ -247,7 +248,7 @@ class MainActivity : AppCompatActivity() {
             }
         } else {
             // not logged in
-            log.debug("updateNavigationMenu: set sign in menu visible")
+            //log.debug("updateNavigationMenu: set sign in menu visible")
             emailAddress.text = ""
             emailAddress.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
             menu.setGroupVisible(R.id.menu_sign_in, true)

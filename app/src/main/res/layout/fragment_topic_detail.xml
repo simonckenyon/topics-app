@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".feature.topic.TopicDetailFragment"
+    tools:context=".feature.topic.fragment.TopicDetailFragment"
     tools:ignore="MergeRootFrame">
 
     <androidx.core.widget.NestedScrollView
@@ -22,7 +22,7 @@
             android:layout_height="match_parent"
             android:padding="16dp"
             android:textIsSelectable="true"
-            tools:context=".feature.topic.TopicDetailFragment" />
+            tools:context=".feature.topic.fragment.TopicDetailFragment" />
 
     </androidx.core.widget.NestedScrollView>
 

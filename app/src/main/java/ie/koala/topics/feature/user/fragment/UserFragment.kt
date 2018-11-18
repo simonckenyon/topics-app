@@ -1,21 +1,27 @@
-package ie.koala.topics.feature.user
+package ie.koala.topics.feature.user.fragment
 
 import android.os.Bundle
-import androidx.annotation.Nullable
-import androidx.appcompat.app.AppCompatActivity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import ie.koala.topics.R
+import ie.koala.topics.feature.user.model.User
+import ie.koala.topics.feature.user.viewmodel.UserViewModel
 import ie.koala.topics.firebase.nonNull
 import ie.koala.topics.firebase.observe
-import kotlinx.android.synthetic.main.activity_user.*
+import kotlinx.android.synthetic.main.fragment_user.*
 import org.slf4j.LoggerFactory
 import java.util.*
 
-class UserActivity : AppCompatActivity() {
+class UserFragment : Fragment() {
 
-    override fun onCreate(@Nullable savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_user)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_user, null)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         val viewModel = ViewModelProviders.of(this).get(UserViewModel::class.java)
         val liveData = viewModel.dataSnapshotLiveData
@@ -25,7 +31,7 @@ class UserActivity : AppCompatActivity() {
                 .observe(this) { dataSnapshot ->
                     log.debug("onChanged: dataSnapshot=" + dataSnapshot)
                     val user = dataSnapshot.getValue(User::class.java)
-                    log.debug( "onChanged: user=$user")
+                    log.debug("onChanged: user=$user")
 
                     // update the UI here with values in the snapshot
                     ticker.text = user?.ticker ?: "ticker not found"
@@ -35,6 +41,6 @@ class UserActivity : AppCompatActivity() {
 
     companion object {
         private val LOG_TAG = "FirebaseQueryLiveData"
-        private val log = LoggerFactory.getLogger(UserActivity::class.java)
+        private val log = LoggerFactory.getLogger(UserFragment::class.java)
     }
 }

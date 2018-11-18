@@ -95,6 +95,16 @@
     <string name="action_refresh">Refresh</string>
     <string name="label_main">Koala Topics</string>
     <string name="label_topic_list">Topic List</string>
+    <string name="label_koala_topics">Koala Topics</string>
+    <string name="label_topics">Topics</string>
     <string name="label_topic_edit">Edit Topic</string>
+    <string name="label_topic_add">Add Topic</string>
+    <string name="label_topic_details">Topic Details</string>
+    <string name="label_user">User</string>
+    <string name="label_sign_in">Sign In</string>
+    <string name="label_sign_up">Sign Up</string>
+    <string name="label_reset_password">Reset Password</string>
+    <string name="title_copyright_statement">Copyright Statement</string>
+    <string name="title_about_this_app">About This App</string>
 
 </resources>
